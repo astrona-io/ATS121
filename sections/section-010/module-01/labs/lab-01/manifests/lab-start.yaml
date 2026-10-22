@@ -1,0 +1,145 @@
+# The workstation pod for every ATS121 environment: the Sigstore client tools
+# and /lab, where the trust files, keys, artifacts and bundles live. Rekor
+# itself is installed by Helm in the bootstrap script.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: workstation
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workstation-setup
+  namespace: workstation
+data:
+  install-tools.sh: |
+    #!/bin/sh
+    # Downloads the pinned client tools into /tools (an emptyDir shared with
+    # the main container). Runs once, as an init container.
+    set -eu
+    COSIGN_VERSION=3.1.4
+    REKOR_VERSION=1.5.5
+    REGCTL_VERSION=0.11.7
+    ARCH="$(uname -m)"
+    case "$ARCH" in x86_64) ARCH=amd64 ;; aarch64|arm64) ARCH=arm64 ;; esac
+    wget -q "https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-${ARCH}" -O /tools/cosign
+    wget -q "https://github.com/sigstore/rekor/releases/download/v${REKOR_VERSION}/rekor-cli-linux-${ARCH}" -O /tools/rekor-cli
+    wget -q "https://github.com/regclient/regclient/releases/download/v${REGCTL_VERSION}/regctl-linux-${ARCH}" -O /tools/regctl
+    chmod 0755 /tools/*
+    ls -l /tools
+  lab-init.sh: |
+    #!/bin/sh
+    # Builds the lab trust files in /lab from the private Rekor:
+    #   rekor.pub            the log's public key
+    #   signing-config.json  tells cosign to upload to the private Rekor
+    #   trusted-root.json    tells cosign to trust the private Rekor's key
+    # Run it again if the Rekor server pod restarted: it then has a new key.
+    set -eu
+    mkdir -p /lab/keys /lab/artifacts /lab/bundles
+    until curl -sf "$REKOR_URL/api/v1/log/publicKey" -o /lab/rekor.pub; do
+      echo "waiting for Rekor..."; sleep 3
+    done
+    cosign signing-config create \
+      --rekor="url=$REKOR_URL,api-version=1,start-time=2026-01-01T00:00:00Z,operator=astrona-lab" \
+      --rekor-config=ANY \
+      --out /lab/signing-config.json
+    cosign trusted-root create \
+      --rekor="url=$REKOR_URL,public-key=/lab/rekor.pub,start-time=2026-01-01T00:00:00Z" \
+      --out /lab/trusted-root.json
+    echo "Lab trust files written to /lab."
+  lab-lib.sh: |
+    # Helpers sourced by the environment's seed and grading scripts.
+    # COSIGN_PASSWORD protects the generated keys. Lab-only.
+    export COSIGN_PASSWORD=lab-only-password
+    # new_key NAME: writes /lab/keys/NAME.key and /lab/keys/NAME.pub
+    new_key() { cosign generate-key-pair --output-key-prefix "/lab/keys/$1" >/dev/null; }
+    # new_artifact PATH TEXT: writes a small artifact with unique content
+    new_artifact() {
+      mkdir -p "$(dirname "$1")"
+      printf '%s\nbuilt: %s\nnonce: %s\n' "$2" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')" > "$1"
+    }
+    # sign_with KEY FILE BUNDLE: signs FILE with /lab/keys/KEY.key, uploads the
+    # entry to the private Rekor and writes the bundle.
+    sign_with() {
+      cosign sign-blob --key "/lab/keys/$1.key" \
+        --signing-config /lab/signing-config.json \
+        --bundle "$3" --yes "$2" >/dev/null
+    }
+    # verify_with PUB FILE BUNDLE: offline verification against the lab trust root.
+    verify_with() {
+      cosign verify-blob --key "$1" --trusted-root /lab/trusted-root.json \
+        --bundle "$3" "$2" >/dev/null 2>&1
+    }
+    # sha256_of FILE: prints the hex SHA-256 of FILE
+    sha256_of() { sha256sum "$1" | cut -d' ' -f1; }
+    # uuids_for_hash HEX: entry IDs whose artifact hash is sha256:HEX
+    uuids_for_hash() {
+      curl -sf -X POST -H 'Content-Type: application/json' \
+        -d "{\"hash\":\"sha256:$1\"}" "$REKOR_URL/api/v1/index/retrieve" | jq -r '.[]'
+    }
+    # uuids_for_key PUBFILE: entry IDs signed by the public key in PUBFILE
+    uuids_for_key() {
+      key_b64="$(base64 < "$1" | tr -d '\n')"
+      curl -sf -X POST -H 'Content-Type: application/json' \
+        -d "{\"publicKey\":{\"format\":\"x509\",\"content\":\"$key_b64\"}}" \
+        "$REKOR_URL/api/v1/index/retrieve" | jq -r '.[]'
+    }
+    # entry_json ID: prints the entry object (body, logIndex, ...) for ID
+    entry_json() { curl -sf "$REKOR_URL/api/v1/log/entries/$1" | jq '.[]'; }
+    # short_id ID: the last 64 hex characters of an entry ID
+    short_id() { printf '%s' "$1" | tr -d ' \r\n' | tr 'A-F' 'a-f' | rev | cut -c1-64 | rev; }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workstation
+  namespace: workstation
+  labels:
+    app: workstation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workstation
+  template:
+    metadata:
+      labels:
+        app: workstation
+    spec:
+      initContainers:
+        - name: install-tools
+          image: alpine:3.22
+          command: ["sh", "/setup/install-tools.sh"]
+          volumeMounts:
+            - name: tools
+              mountPath: /tools
+            - name: setup
+              mountPath: /setup
+      containers:
+        - name: workstation
+          image: alpine:3.22
+          command: ["sh", "-c", "apk add --no-cache curl jq git openssl coreutils >/dev/null && while true; do sleep 30; done"]
+          env:
+            - name: PATH
+              value: /tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: REKOR_URL
+              value: http://rekor.localtest.me
+            # rekor-cli reads REKOR_<FLAG> environment variables (viper prefix
+            # "rekor"), so this sets the default --rekor_server.
+            - name: REKOR_REKOR_SERVER
+              value: http://rekor.localtest.me
+          volumeMounts:
+            - name: tools
+              mountPath: /tools
+            - name: setup
+              mountPath: /setup
+            - name: lab
+              mountPath: /lab
+      volumes:
+        - name: tools
+          emptyDir: {}
+        - name: lab
+          emptyDir: {}
+        - name: setup
+          configMap:
+            name: workstation-setup

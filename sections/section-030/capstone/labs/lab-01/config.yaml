@@ -1,0 +1,56 @@
+# Keep Verifiable Evidence For Rekor v2
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-121-capstone-030"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-rekor"
+      description: "Installs Helm 3.22.1, the CoreDNS rewrite, the workstation pod and a private Rekor v1 (chart 1.8.7), and writes the lab trust files"
+      type: "file"
+      source: "bootstrap/01-install-rekor.sh"
+    - name: "ats-121-capstone-030-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
+      type: "file"
+      source: "manifests/lab-start.yaml"
+
+testing:
+  init:
+    - name: "wait-for-rekor"
+      description: "Waits until the workstation reaches Rekor and the trust files exist"
+      type: "file"
+      source: "testing/wait-for-rekor.sh"
+    - name: "reference-solution"
+      description: "The work a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-release-bundles"
+      description: "Confirms every release artifact has a bundle that verifies with the release key"
+      type: "file"
+      source: "validation/validate-release-bundles.sh"
+    - name: "validate-bundle-evidence"
+      description: "Confirms each release bundle is a v0.3 bundle with an inclusion proof and a checkpoint"
+      type: "file"
+      source: "validation/validate-bundle-evidence.sh"
+    - name: "validate-signing-config-v2"
+      description: "Confirms /lab/signing-config-v2.json points cosign at a Rekor v2 log"
+      type: "file"
+      source: "validation/validate-signing-config-v2.sh"
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,56 @@
+# Find And Prove A Release Entry
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-121-lab-010-01"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-rekor"
+      description: "Installs Helm 3.22.1, the CoreDNS rewrite, the workstation pod and a private Rekor v1 (chart 1.8.7), and writes the lab trust files"
+      type: "file"
+      source: "bootstrap/01-install-rekor.sh"
+    - name: "ats-121-lab-010-01-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
+      type: "file"
+      source: "manifests/lab-start.yaml"
+
+testing:
+  init:
+    - name: "wait-for-rekor"
+      description: "Waits until the workstation reaches Rekor and the trust files exist"
+      type: "file"
+      source: "testing/wait-for-rekor.sh"
+    - name: "reference-solution"
+      description: "The work a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-answer-recorded"
+      description: "Confirms the ConfigMap entry-answer holds a log index and a UUID"
+      type: "file"
+      source: "validation/validate-answer-recorded.sh"
+    - name: "validate-entry-matches-artifact"
+      description: "Confirms the recorded entry is the log entry for inventory-1.2.0.tar.gz.txt"
+      type: "file"
+      source: "validation/validate-entry-matches-artifact.sh"
+    - name: "validate-inclusion-proof"
+      description: "Confirms rekor-cli verifies the inclusion proof of the recorded entry"
+      type: "file"
+      source: "validation/validate-inclusion-proof.sh"
+
+teardown:
+  keepCluster: false

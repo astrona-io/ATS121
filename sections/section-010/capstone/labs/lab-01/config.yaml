@@ -1,0 +1,56 @@
+# Prove The Log Only Grew
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-121-capstone-010"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-rekor"
+      description: "Installs Helm 3.22.1, the CoreDNS rewrite, the workstation pod and a private Rekor v1 (chart 1.8.7), and writes the lab trust files"
+      type: "file"
+      source: "bootstrap/01-install-rekor.sh"
+    - name: "ats-121-capstone-010-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
+      type: "file"
+      source: "manifests/lab-start.yaml"
+
+testing:
+  init:
+    - name: "wait-for-rekor"
+      description: "Waits until the workstation reaches Rekor and the trust files exist"
+      type: "file"
+      source: "testing/wait-for-rekor.sh"
+    - name: "reference-solution"
+      description: "The work a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-genuine-checkpoint"
+      description: "Confirms the answer names the checkpoint whose root hash the log proves"
+      type: "file"
+      source: "validation/validate-genuine-checkpoint.sh"
+    - name: "validate-tree-size"
+      description: "Confirms tree-size and entries-added match the log"
+      type: "file"
+      source: "validation/validate-tree-size.sh"
+    - name: "validate-log-grew-only"
+      description: "Confirms a consistency proof from the saved size to the current size exists"
+      type: "file"
+      source: "validation/validate-log-grew-only.sh"
+
+teardown:
+  keepCluster: false

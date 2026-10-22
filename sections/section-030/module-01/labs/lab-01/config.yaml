@@ -1,0 +1,52 @@
+# Find The Bundles That Do Not Verify
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-121-lab-030-01"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-rekor"
+      description: "Installs Helm 3.22.1, the CoreDNS rewrite, the workstation pod and a private Rekor v1 (chart 1.8.7), and writes the lab trust files"
+      type: "file"
+      source: "bootstrap/01-install-rekor.sh"
+    - name: "ats-121-lab-030-01-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
+      type: "file"
+      source: "manifests/lab-start.yaml"
+
+testing:
+  init:
+    - name: "wait-for-rekor"
+      description: "Waits until the workstation reaches Rekor and the trust files exist"
+      type: "file"
+      source: "testing/wait-for-rekor.sh"
+    - name: "reference-solution"
+      description: "The work a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-failed-bundles"
+      description: "Confirms failed lists exactly the artifacts whose bundles do not verify offline"
+      type: "file"
+      source: "validation/validate-failed-bundles.sh"
+    - name: "validate-others-still-verify"
+      description: "Confirms the other three bundles still verify with the release key and the lab trust root"
+      type: "file"
+      source: "validation/validate-others-still-verify.sh"
+
+teardown:
+  keepCluster: false

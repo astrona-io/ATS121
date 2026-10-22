@@ -1,0 +1,266 @@
+# Course manifest for ATS121 - Immutable Auditing With The Rekor Transparency Log (Sigstore).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's summary page
+# comes last. The section capstone closes the section. Playgrounds are not
+# listed: the landing page's playground marker shows them. solution.md is
+# never listed.
+#
+# Every `path:` is relative to this file.
+
+training:
+  id: ATS121
+  title: "Sigstore: Immutable Auditing With The Rekor Transparency Log"
+  maturity: draft
+  description: >
+    Training material covering the Immutable Auditing With The Rekor
+    Transparency Log domain of the Sigstore training path: why signing needs
+    an append-only log, Merkle trees, inclusion and consistency proofs,
+    checkpoints and signed entry timestamps, searching Rekor by artifact and
+    public key, auditing the entries of one key, the Sigstore bundle and
+    offline verification, and what changes with Rekor v2. Each module pairs a
+    layered reader with an ungraded hands-on playground and a graded practice
+    lab. Each section closes with an integration capstone.
+    Written for cosign v3.1.4, rekor-cli v1.5.5 and a private Rekor v1.5.4.
+
+  certification:
+    name: Sigstore
+    code: SIGSTORE
+    provider: Astrona
+    domain: Immutable Auditing With The Rekor Transparency Log
+    weight: 15
+
+modules:
+
+  - id: module-intro
+    title: "Introduction"
+    description: >
+      Start here. What this course trains you to do, how it is laid out, how
+      to get your machine ready with the astrona command-line tool, how the
+      content is written and checked, who maintains it, and how to report a
+      mistake.
+
+    content:
+      - type: reading
+        title: Introduction
+        path: sections/intro/README.md
+      - type: reading
+        title: "Welcome To The Course"
+        path: sections/intro/course-01-welcome.md
+      - type: reading
+        title: "Get Your Machine Ready"
+        path: sections/intro/course-02-get-your-machine-ready.md
+      - type: reading
+        title: "How This Course Is Made"
+        path: sections/intro/course-03-how-this-course-is-made.md
+
+  - id: module-010
+    title: "Transparency Logs And Merkle Trees"
+    description: >
+      Why a signature needs a public, append-only record, how Rekor builds a
+      Merkle tree over its entries, and how inclusion proofs, consistency
+      proofs, checkpoints and signed entry timestamps let anyone check the
+      log without trusting it.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Read And Prove A Transparency Log"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "Why Signing Needs A Transparency Log"
+        path: sections/section-010/module-01/course-01-why-transparency-logs.md
+      - type: reading
+        title: "Merkle Trees And Inclusion Proofs"
+        path: sections/section-010/module-01/course-02-merkle-trees-and-inclusion-proofs.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Find And Prove A Release Entry Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 20m
+        topic: proofs
+        task_kind: build
+        tags: [rekor, rekor-cli, artifact-search, log-index, entry-uuid, inclusion-proof]
+        learning_goals:
+          - Find the log entry of one artifact by its SHA-256 hash
+          - Verify the entry's inclusion proof with rekor-cli verify
+          - Record the entry's log index and UUID for an auditor
+        resources:
+          - name: "Rekor transparency log overview"
+            url: https://docs.sigstore.dev/logging/overview/
+          - name: "RFC 6962: Certificate Transparency (Merkle tree hashing)"
+            url: https://datatracker.ietf.org/doc/html/rfc6962
+          - name: "Rekor source and rekor-cli"
+            url: https://github.com/sigstore/rekor
+      - type: reading
+        title: "Consistency Proofs, Checkpoints And Monitors"
+        path: sections/section-010/module-01/course-03-consistency-proofs-and-checkpoints.md
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Prove The Log Only Grew Capstone"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: proofs
+        task_kind: troubleshooting
+        tags: [rekor, rekor-cli, consistency-proof, checkpoint, merkle-tree, audit]
+        learning_goals:
+          - Tell a genuine saved checkpoint from a forged one by asking the log for its root hash at that size
+          - Prove with a consistency proof that the log only grew since the checkpoint
+          - Report the current tree size and how many entries were added
+        resources:
+          - name: "RFC 6962: Merkle consistency proofs"
+            url: https://datatracker.ietf.org/doc/html/rfc6962
+          - name: "Rekor transparency log overview"
+            url: https://docs.sigstore.dev/logging/overview/
+
+  - id: module-020
+    title: "Searching And Auditing Rekor"
+    description: >
+      Rekor v1's search index and the rekor-cli search and get commands,
+      reading the body of a hashedrekord entry, and auditing the log: every
+      entry made by one key, and the signing events nobody expected.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Search And Audit Rekor Entries"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "Searching The Log"
+        path: sections/section-020/module-01/course-01-searching-the-log.md
+      - type: reading
+        title: "Reading And Auditing Entries"
+        path: sections/section-020/module-01/course-02-reading-and-auditing-entries.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Find Every Entry Signed By A Leaked Key Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: auditing
+        task_kind: troubleshooting
+        tags: [rekor-cli, public-key-search, search-index, hashedrekord, entry-uuid, audit]
+        learning_goals:
+          - List every log entry made by a leaked signing key
+          - Decode each entry and compare its artifact hash with the release manifest
+          - Name the artifact the key signed outside the release
+        resources:
+          - name: "Rekor transparency log overview"
+            url: https://docs.sigstore.dev/logging/overview/
+          - name: "Rekor source and rekor-cli"
+            url: https://github.com/sigstore/rekor
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-01/course-03-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Investigate An Unknown Signer Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: auditing
+        task_kind: troubleshooting
+        tags: [rekor-cli, artifact-search, public-key-search, hashedrekord, log-index, audit]
+        learning_goals:
+          - Find which key signed a release artifact from its log entry alone
+          - List every entry that key made and find when it first appeared
+          - Record the findings for an incident report
+        resources:
+          - name: "Rekor transparency log overview"
+            url: https://docs.sigstore.dev/logging/overview/
+          - name: "Rekor source and rekor-cli"
+            url: https://github.com/sigstore/rekor
+
+  - id: module-030
+    title: "Bundles, Offline Verification And Rekor v2"
+    description: >
+      The Sigstore bundle and the log evidence it carries, verifying a bundle
+      offline with a trusted root, what tampering each check catches, and
+      what changes with Rekor v2: tiles, one entry type and no search index.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-030/README.md
+
+      - type: reading
+        title: "Verify Bundles Offline And Prepare For Rekor v2"
+        path: sections/section-030/module-01/course.md
+      - type: reading
+        title: "The Sigstore Bundle"
+        path: sections/section-030/module-01/course-01-the-sigstore-bundle.md
+      - type: reading
+        title: "Verifying A Bundle Offline"
+        path: sections/section-030/module-01/course-02-offline-verification.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Find The Bundles That Do Not Verify Lab"
+        path: sections/section-030/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: bundles
+        task_kind: troubleshooting
+        tags: [sigstore-bundle, offline-verification, trusted-root, inclusion-proof, cosign]
+        learning_goals:
+          - Verify a set of bundles offline against the lab trust root
+          - Tell a changed artifact from a changed inclusion proof by the error
+          - Report exactly the artifacts that do not verify
+        resources:
+          - name: "Sigstore bundle format"
+            url: https://docs.sigstore.dev/about/bundle/
+          - name: "Verifying signatures with cosign"
+            url: https://docs.sigstore.dev/cosign/verifying/verify/
+      - type: reading
+        title: "What Changes With Rekor v2"
+        path: sections/section-030/module-01/course-03-rekor-v2.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Keep Verifiable Evidence For Rekor v2 Capstone"
+        path: sections/section-030/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 30m
+        topic: rekor-v2
+        task_kind: migration
+        tags: [sigstore-bundle, signing-config, trusted-root, offline-verification, rekor-v2, cosign]
+        learning_goals:
+          - Replace a bundle signed with a retired key and keep a verifiable bundle for every release artifact
+          - Check that each bundle carries its inclusion proof and checkpoint
+          - Write a signing config that points cosign at a Rekor v2 log
+        resources:
+          - name: "Sigstore bundle format"
+            url: https://docs.sigstore.dev/about/bundle/
+          - name: "Rekor v2 (rekor-tiles)"
+            url: https://github.com/sigstore/rekor-tiles
+          - name: "cosign signing-config create"
+            url: https://github.com/sigstore/cosign/blob/v3.1.4/doc/cosign_signing-config_create.md

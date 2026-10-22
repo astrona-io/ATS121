@@ -1,0 +1,52 @@
+# Investigate An Unknown Signer
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-121-capstone-020"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-rekor"
+      description: "Installs Helm 3.22.1, the CoreDNS rewrite, the workstation pod and a private Rekor v1 (chart 1.8.7), and writes the lab trust files"
+      type: "file"
+      source: "bootstrap/01-install-rekor.sh"
+    - name: "ats-121-capstone-020-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+  manifests:
+    - name: "lab-start"
+      description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
+      type: "file"
+      source: "manifests/lab-start.yaml"
+
+testing:
+  init:
+    - name: "wait-for-rekor"
+      description: "Waits until the workstation reaches Rekor and the trust files exist"
+      type: "file"
+      source: "testing/wait-for-rekor.sh"
+    - name: "reference-solution"
+      description: "The work a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-signer-key"
+      description: "Confirms signer-public-key is the key that signed inventory-2.0.0.txt"
+      type: "file"
+      source: "validation/validate-signer-key.sh"
+    - name: "validate-intruder-entries"
+      description: "Confirms intruder-uuids lists every entry made by that key and first-intruder-index is the earliest"
+      type: "file"
+      source: "validation/validate-intruder-entries.sh"
+
+teardown:
+  keepCluster: false

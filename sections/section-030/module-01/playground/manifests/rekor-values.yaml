@@ -1,0 +1,39 @@
+# Helm values for a private Rekor v1 (chart rekor 1.8.7, rekor-server v1.5.4)
+# in every ATS121 environment. Based on the chart's own ci/ci-values.yaml.
+# Plain HTTP and an in-memory signer: lab-only. A restart of the Rekor server
+# pod creates a new log key.
+server:
+  ingress:
+    enabled: false
+  signer: memory
+  attestation_storage:
+    enabled: false
+    persistence:
+      enabled: false
+
+redis:
+  enabled: true
+
+trillian:
+  # Dependency CI values are not inherited; the chart's CI applies the MySQL
+  # 8.4 overrides here to avoid MySQL 5.7's startup OOM on kind.
+  mysql:
+    image:
+      # db_server:v1.7.3 (MySQL 8.4)
+      version: sha256:763dfa45405724b466dbaf980d0410e170019afd8747650b8af878538dcea1e2
+    # MySQL 8.4 no longer supports --ignore-db-dir.
+    args: []
+    resources:
+      limits:
+        memory: 1Gi
+      requests:
+        memory: 256Mi
+    livenessProbe:
+      exec:
+        command: [mysqladmin, ping, -h, 127.0.0.1, --silent]
+      initialDelaySeconds: 90
+      timeoutSeconds: 5
+    readinessProbe:
+      exec:
+        command: [mysqladmin, ping, -h, 127.0.0.1, --silent]
+      timeoutSeconds: 5
