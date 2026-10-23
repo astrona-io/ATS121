@@ -25,6 +25,7 @@ export COSIGN_PASSWORD=lab-only-password
 for name in inventory-4.0.0 inventory-4.0.1 inventory-4.1.0; do
   cosign sign-blob --key /lab/keys/release.key \
     --signing-config /lab/signing-config.json \
+    --trusted-root /lab/trusted-root.json \
     --bundle "/lab/release/$name.txt.sigstore.json" \
     --yes "/lab/release/$name.txt"
 done

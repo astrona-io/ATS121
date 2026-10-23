@@ -37,6 +37,7 @@ export COSIGN_PASSWORD=lab-only-password
 printf 'inventory release 1.2.0\n' > /lab/artifacts/inventory-1.2.0.txt
 cosign sign-blob --key /lab/keys/team-a.key \
   --signing-config /lab/signing-config.json \
+  --trusted-root /lab/trusted-root.json \
   --bundle /lab/bundles/inventory-1.2.0.txt.sigstore.json \
   --yes /lab/artifacts/inventory-1.2.0.txt
 ```

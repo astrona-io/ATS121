@@ -63,6 +63,7 @@ data:
     sign_with() {
       cosign sign-blob --key "/lab/keys/$1.key" \
         --signing-config /lab/signing-config.json \
+        --trusted-root /lab/trusted-root.json \
         --bundle "$3" --yes "$2" >/dev/null
     }
     # verify_with PUB FILE BUNDLE: offline verification against the lab trust root.

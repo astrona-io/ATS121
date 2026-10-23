@@ -57,7 +57,7 @@ cosign bundle inspect /lab/bundles/inventory-3.0.0.txt.sigstore.json
 | File | What it tells `cosign` | Used by |
 | --- | --- | --- |
 | `/lab/signing-config.json` (signing config) | Which Rekor, Fulcio and timestamp authority URLs to use, with their API version and validity dates | `cosign sign-blob --signing-config` |
-| `/lab/trusted-root.json` (trusted root) | The public keys of the logs, certificate authorities and timestamp authorities to trust, with validity dates | `cosign verify-blob --trusted-root` |
+| `/lab/trusted-root.json` (trusted root) | The public keys of the logs, certificate authorities and timestamp authorities to trust, with validity dates | `cosign verify-blob --trusted-root`, and `cosign sign-blob --trusted-root`, which checks the new log entry right after the upload |
 
 Look at the Rekor part of each:
 
