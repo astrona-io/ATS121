@@ -19,21 +19,37 @@ Both name the same tree size and different root hashes. Only one root hash can b
 SAVED_SIZE="$(jq -r '.treeSize' /lab/checkpoints/candidate-a.json)"
 ```
 
-## Step 2: Ask the log for its root hash at the saved size
+## Step 2: Read the log's root hash at the saved size from a bundle
 
-A consistency proof from size 1 to the saved size comes with the root hash of the tree at that size. Ask for it:
+A consistency proof does not give you the old root: `rekor-cli logproof` and `/api/v1/log/proof` always report the log's current root hash, whatever `--last-size` you ask for. The log's root at the saved size is in a checkpoint for that size. Every Sigstore bundle in `/lab/bundles/` keeps one: when `cosign` uploaded the entry, Rekor returned an inclusion proof for the tree right after it added the entry, with the signed checkpoint for that tree size.
 
-```sh
-rekor-cli logproof --first-size 1 --last-size "$SAVED_SIZE"
-```
-
-The line `Current Root Hash` is the root of the tree at `--last-size`, here the saved size. The same answer from the API, with only the root hash:
+List the tree size each bundle's inclusion proof was made for, and keep the bundle whose size is the saved size:
 
 ```sh
-curl -s "$REKOR_URL/api/v1/log/proof?firstSize=1&lastSize=$SAVED_SIZE" | jq -r '.rootHash'
+for file in /lab/bundles/*.sigstore.json; do
+  size="$(jq -r '.verificationMaterial.tlogEntries[0].inclusionProof.treeSize' "$file")"
+  echo "$size $file"
+  [ "$size" = "$SAVED_SIZE" ] && BUNDLE="$file"
+done
+echo "bundle for size $SAVED_SIZE: $BUNDLE"
 ```
 
-Compare that root hash with the two candidates. The one that matches is genuine; the other was forged. The log's answer is trustworthy here because the proof is checked against the log's signed checkpoint, which a forger cannot produce.
+The bundle stores the root hash in Base64, a text encoding of binary data, while the candidates hold it in hexadecimal. Convert it, then print both candidates next to it:
+
+```sh
+jq -r '.verificationMaterial.tlogEntries[0].inclusionProof.rootHash' "$BUNDLE" | base64 -d | od -An -tx1 | tr -d ' \n'; echo
+jq -r '.rootHash' /lab/checkpoints/candidate-a.json /lab/checkpoints/candidate-b.json
+```
+
+The candidate that matches the converted root hash is genuine; the other was forged. You can trust the bundle's root hash because the log signed it in the checkpoint. `cosign verify-blob` checks that signature against the log's key in the trusted root, together with the inclusion proof, without network access:
+
+```sh
+cosign verify-blob --key /lab/keys/release.pub \
+  --trusted-root /lab/trusted-root.json \
+  --bundle "$BUNDLE" "/lab/artifacts/$(basename "$BUNDLE" .sigstore.json)"
+```
+
+A forger can write any hash into a file, but cannot produce a checkpoint the log's key signed.
 
 ## Step 3: Prove the log only grew
 
@@ -68,12 +84,15 @@ astrona submit -c sections/section-010/capstone/labs/lab-01
 
 | Shortcut | What happens |
 | --- | --- |
-| Pick the candidate with the newer file time | Both files were written at the same moment; only the log's proof tells them apart |
+| Pick the candidate with the newer file time | Both files were written at the same moment; only the log's signed checkpoint tells them apart |
 | Compare a candidate with today's root hash | Today's tree is larger, so its root hash is different from both candidates |
+| Ask `rekor-cli logproof` with the saved size as `--last-size` for the root | The answer's root hash is the current root, not the root at the saved size, so it matches neither candidate |
 | Sign something to "refresh" the log | The tree size changes, and your recorded size no longer matches |
 
 ## Common mistakes
 
+- Comparing the Base64 root hash from the bundle with the hexadecimal root hash in a candidate without converting it first.
+- Picking a bundle by its file name: use the bundle whose `inclusionProof.treeSize` is the saved size.
 - Using size 0 as the first size: a consistency proof starts at size 1 or more.
 - Recording the saved size as `tree-size` instead of the current size.
 - Swapping `--first-size` and `--last-size`; the first size must be the smaller one.

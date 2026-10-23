@@ -3,6 +3,7 @@
 Before starting this lab you should be able to:
 
 - Read a checkpoint: tree size and root hash.
+- Read the tree size and root hash in a Sigstore bundle's inclusion proof, and convert the Base64 root hash to hexadecimal.
 - Ask Rekor for a consistency proof with `rekor-cli logproof` or the API.
 - Create a ConfigMap with `kubectl create configmap --from-literal`.
 

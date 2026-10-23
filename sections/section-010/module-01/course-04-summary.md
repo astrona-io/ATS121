@@ -6,7 +6,9 @@ A signature proves who signed an artifact, but not when, not to anyone else, and
 
 Rekor keeps its entries in a Merkle tree, hashed the way RFC 6962 defines it: a leaf hash is SHA-256 over a zero byte and the entry, and a node hash is SHA-256 over a one byte and its two children. The root hash at the top changes if any entry changes. An inclusion proof is the list of sibling hashes from one leaf up to the root; a verifier who recomputes the signed root from the entry knows the entry is in the tree. In Rekor v1 the entry's 64-character UUID is its leaf hash, and search results may add 16 characters in front that name the tree.
 
-A consistency proof shows that a smaller tree is the start of a larger one, so the log only grew and never changed or dropped an entry. Asking for a proof from size 1 to some size also reveals the root hash the tree had at that size, which is how an auditor checks a saved root. The log stands behind its hashes with two signed statements: a checkpoint, which signs a tree size and root hash, and a signed entry timestamp, which promises that one accepted entry will be added. Monitors and witnesses are the programs and parties that check those statements over time.
+A consistency proof shows that a smaller tree is the start of a larger one, so the log only grew and never changed or dropped an entry. The proof answer always carries the log's current root hash, not the root at the last size asked for. The root hash the tree had at an older size comes from a checkpoint for that size. A Sigstore bundle keeps one from the moment its entry was added, and an auditor uses it to check a saved root.
+
+The log stands behind its hashes with two signed statements: a checkpoint, which signs a tree size and root hash, and a signed entry timestamp, which promises that one accepted entry will be added. Monitors and witnesses are the programs and parties that check those statements over time.
 
 The key facts to remember are these:
 

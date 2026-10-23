@@ -119,7 +119,7 @@ modules:
         task_kind: troubleshooting
         tags: [rekor, rekor-cli, consistency-proof, checkpoint, merkle-tree, audit]
         learning_goals:
-          - Tell a genuine saved checkpoint from a forged one by asking the log for its root hash at that size
+          - Tell a genuine saved checkpoint from a forged one with the log's signed checkpoint for that size, read from a Sigstore bundle
           - Prove with a consistency proof that the log only grew since the checkpoint
           - Report the current tree size and how many entries were added
         resources:

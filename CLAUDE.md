@@ -280,9 +280,17 @@ The riskiest assumptions, in order (check these first on the first run):
    need Redis; it is enabled. Search results may be 80-character entry IDs
    (tree ID + UUID) while `rekor-cli get` prints 64-character UUIDs; graders
    compare the last 64 hex characters.
-4. **`rekor-cli logproof` output.** Pages describe it in words only: it
-   prints the hashes of the consistency proof and the root hash at
-   `--last-size`.
+4. **`rekor-cli logproof` output (checked on Rekor v1.5.4, 2026-10-23).**
+   Pages describe it in words only: it prints the hashes of the consistency
+   proof and, as `Current Root Hash`, the root of the **current** tree, not
+   the root at `--last-size`. `GET /api/v1/log/proof` does the same in
+   `rootHash` (a proof to size 4 on a tree of size 7 returned the size-7
+   root). Never teach or grade "the root at size N" from a proof answer. The
+   root at size N comes from a checkpoint for size N: a bundle written by
+   `cosign sign-blob --bundle` keeps the one from when its entry was added,
+   in `.verificationMaterial.tlogEntries[0].inclusionProof.treeSize` and
+   `.rootHash` (Base64; convert with
+   `printf '%s' "$b64" | base64 -d | od -An -tx1 | tr -d ' \n'`).
 
 ### Terms, not metaphors
 

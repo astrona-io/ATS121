@@ -58,13 +58,25 @@ You can ask for a consistency proof between any two sizes. Use the size you saw 
 rekor-cli logproof --first-size 2 --last-size 3
 ```
 
-If your playground already had more entries, use the two tree sizes `rekor-cli loginfo` printed instead of 2 and 3. The answer holds the hashes of the proof and the root hash of the tree at the last size. The API gives the same through `curl`, which is handy in scripts:
+If your playground already had more entries, use the two tree sizes `rekor-cli loginfo` printed instead of 2 and 3. The answer holds the hashes of the proof and the root hash of the log as it is now. The API gives the same through `curl`, which is handy in scripts:
 
 ```sh
 curl -s "$REKOR_URL/api/v1/log/proof?firstSize=2&lastSize=3" | jq .
 ```
 
-There is a useful trick hidden here. The `rootHash` in this answer is the root of the tree at `lastSize`. So if you only know a size, you can learn what the root hash was at that size by asking for a proof from size 1 to it. An auditor uses exactly that to check a root hash someone saved earlier.
+Rekor fills `rootHash` in this answer with the root of the current tree, not the root at `lastSize`. Here the last size is the current size, so the two are the same. If you ask for a proof that ends at an older size, the `hashes` still prove consistency, but `rootHash` is today's root. So a proof answer cannot tell you what the root hash was at an older size.
+
+A **Sigstore bundle** can. It is the JSON file `cosign` writes next to a signature, with the log's evidence for the entry. When `cosign` uploads an entry, Rekor returns an inclusion proof for the tree right after it added the entry, together with the checkpoint for that tree. The bundle keeps both, so the bundle you just wrote holds a tree size and the root hash the log signed for that size.
+
+The bundle stores the root hash in Base64, a text encoding of binary data, while the API prints it in hexadecimal. Convert it before you compare:
+
+```sh
+BUNDLE=/lab/bundles/inventory-1.2.0.txt.sigstore.json
+jq '.verificationMaterial.tlogEntries[0].inclusionProof | {logIndex, treeSize, rootHash}' "$BUNDLE"
+jq -r '.verificationMaterial.tlogEntries[0].inclusionProof.rootHash' "$BUNDLE" | base64 -d | od -An -tx1 | tr -d ' \n'; echo
+```
+
+Here the `treeSize` is one more than the `logIndex`, because no other entry arrived in between. If nothing was signed since, the hexadecimal root is the one `rekor-cli loginfo` printed last. An auditor who wants to check a root hash saved at size N looks for a bundle whose inclusion proof has tree size N, and compares its root hash with the saved one.
 
 ## Checkpoints and signed entry timestamps
 
@@ -95,6 +107,7 @@ You can now prove that a log only grew, read a checkpoint, and say what a SET pr
 
 > [!WARNING]
 > - **Comparing root hashes of different sizes.** Two root hashes only match when they are for the same tree size. Compare a saved root with the root at that same size, not with today's root.
+> - **Reading a proof's `rootHash` as the root at `lastSize`.** The consistency proof answer always carries the current root. The root at an older size comes from a checkpoint for that size, for example in a bundle.
 > - **Treating a SET as an inclusion proof.** A SET is a signed promise made before the entry is in the tree. An inclusion proof shows the entry is there.
 > - **Signing without the signing config.** Without `--signing-config /lab/signing-config.json`, `cosign` v3 sends the entry to the public log.
 > - **Restarting the Rekor server pod in the lab.** The lab log keeps its signing key in memory. After a restart it signs with a new key, and old trust files no longer match new checkpoints.
