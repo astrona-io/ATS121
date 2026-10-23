@@ -15,8 +15,18 @@ for version in 2.0.0 2.1.0 2.2.0 2.3.0; do
 done
 # Record the log state an auditor saved earlier, plus a forged copy.
 sleep 5
-size="$(curl -sf "$REKOR_URL/api/v1/log" | jq -r '.treeSize')"
-root="$(curl -sf "$REKOR_URL/api/v1/log" | jq -r '.rootHash')"
+# Read the tree size and the root hash from one response (two requests can
+# see two different trees while Rekor still integrates entries), and check
+# that the consistency proof endpoint reports the same root for that size.
+for _ in $(seq 1 30); do
+  loginfo="$(curl -sf "$REKOR_URL/api/v1/log")"
+  size="$(printf '%s' "$loginfo" | jq -r '.treeSize')"
+  root="$(printf '%s' "$loginfo" | jq -r '.rootHash')"
+  proof_root="$(curl -sf "$REKOR_URL/api/v1/log/proof?firstSize=1&lastSize=$size" | jq -r '.rootHash')"
+  [ -n "$root" ] && [ "$proof_root" = "$root" ] && break
+  sleep 2
+done
+[ "$proof_root" = "$root" ] || { echo "ERROR: Rekor does not report a stable root hash." >&2; exit 1; }
 forged="$(printf '%s' "$root" | sed 's/^\(.\)\(.\)/\2\1/')"
 [ "$forged" = "$root" ] && forged="$(printf '%s' "$root" | tr '0123456789abcdef' '123456789abcdef0')"
 mkdir -p /lab/checkpoints
