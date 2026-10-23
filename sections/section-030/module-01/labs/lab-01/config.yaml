@@ -9,7 +9,6 @@ metadata:
     question: "question.md"
     examQuestion: "question.md"
     prerequisites: "prerequisites.md"
-
 bootstrap:
   init:
     - name: "install-rekor"
@@ -25,7 +24,6 @@ bootstrap:
       description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
       type: "file"
       source: "manifests/lab-start.yaml"
-
 testing:
   init:
     - name: "wait-for-rekor"
@@ -36,7 +34,6 @@ testing:
       description: "The work a correct learner performs; used by `astrona test`"
       type: "file"
       source: "solution/apply.sh"
-
 validation:
   scripts:
     - name: "validate-failed-bundles"
@@ -47,6 +44,9 @@ validation:
       description: "Confirms the other three bundles still verify with the release key and the lab trust root"
       type: "file"
       source: "validation/validate-others-still-verify.sh"
-
 teardown:
   keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - alpine:3.22

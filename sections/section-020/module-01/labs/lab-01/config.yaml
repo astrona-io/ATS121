@@ -9,7 +9,6 @@ metadata:
     question: "question.md"
     examQuestion: "question.md"
     prerequisites: "prerequisites.md"
-
 bootstrap:
   init:
     - name: "install-rekor"
@@ -25,7 +24,6 @@ bootstrap:
       description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
       type: "file"
       source: "manifests/lab-start.yaml"
-
 testing:
   init:
     - name: "wait-for-rekor"
@@ -36,7 +34,6 @@ testing:
       description: "The work a correct learner performs; used by `astrona test`"
       type: "file"
       source: "solution/apply.sh"
-
 validation:
   scripts:
     - name: "validate-leaked-key-entries"
@@ -47,6 +44,9 @@ validation:
       description: "Confirms unexpected-sha256 is the hash of the ci-old artifact that is not in the release manifest"
       type: "file"
       source: "validation/validate-unexpected-artifact.sh"
-
 teardown:
   keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - alpine:3.22

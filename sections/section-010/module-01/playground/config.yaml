@@ -7,7 +7,6 @@ metadata:
   name: "ats-121-playground-010-01"
   docs:
     guide: "docs/overview.md"
-
 bootstrap:
   init:
     - name: "prepare"
@@ -19,6 +18,9 @@ bootstrap:
       description: "The workstation pod with cosign, rekor-cli and regctl (namespace workstation)."
       type: "file"
       source: "manifests/lab-start.yaml"
-
 teardown:
   keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - alpine:3.22
