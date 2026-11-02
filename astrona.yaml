@@ -29,8 +29,6 @@ training:
     name: Sigstore
     code: SIGSTORE
     provider: Astrona
-    domain: Immutable Auditing With The Rekor Transparency Log
-    weight: 15
 
 modules:
 
