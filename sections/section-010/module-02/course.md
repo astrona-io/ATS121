@@ -4,7 +4,7 @@ Every proof in a transparency log starts with an entry, and every entry starts w
 
 This module opens the Rekor server and looks at its parts. It then shows the entry types that Rekor v1 accepts, uploads an entry by hand with `rekor-cli` and `openssl` instead of `cosign`, and ends with the log's tree ID, its shards and the REST API that every client uses. Keep one sentence in mind: **an entry is a signed statement about a hash, and Rekor checks that statement before it adds it to the tree.**
 
-The module has four parts. **How Rekor Is Built** names the programs and the storage behind the API. **Entry Types And Their Fields** compares the entry types and reads the body of two of them. **Uploading An Entry By Hand** signs a file with `openssl` and uploads it with `rekor-cli`; a graded lab follows it. **Shards, Tree IDs And The API** explains how an entry ID is made and which API calls an auditor uses.
+The module has five parts. **How Rekor Is Built** names the programs and the storage behind the API. **Entry Types And Their Fields** compares the entry types and reads the body of two of them. **Uploading An Entry By Hand** signs a file with `openssl` and uploads it with `rekor-cli`; a graded lab follows it. **Shards, Tree IDs And The API** explains how an entry ID is made and which API calls an auditor uses. **What Rekor Checks Before Adding** sends three bad uploads and shows which claims the log verifies and which it leaves to you.
 
 ## Learning objectives
 
@@ -18,6 +18,7 @@ After this module you can:
 - Explain what Rekor does when you upload the same entry twice.
 - Split an entry ID into a tree ID and a leaf hash.
 - Explain what a shard is and read `treeID` and `inactiveShards` from the log.
+- Name the checks Rekor runs on upload and what a rejected upload leaves behind.
 
 ## Before you start
 

@@ -4,7 +4,7 @@ A signature over a file says that a key holder approved these bytes. It does not
 
 This module follows one attestation from creation to audit. You build the statement by hand, sign and log it with `cosign attest-blob`, verify it offline, and then find attestation entries in the log. Keep one sentence in mind: **an attestation is a signed statement about an artifact, and the log records it just like a signature, with a different entry kind.**
 
-The module has four parts. **Attestations And The DSSE Envelope** builds a statement and shows how it is wrapped. **Logging An Attestation** signs it, uploads it and reads the log entry that results. **Verifying An Attestation** checks the bundle offline and shows what a wrong predicate type does; a graded lab follows it. **Auditing Attestations In The Log** finds attestation entries for a key and compares them with the bundle.
+The module has five parts. **Attestations And The DSSE Envelope** builds a statement and shows how it is wrapped. **Logging An Attestation** signs it, uploads it and reads the log entry that results. **Verifying An Attestation** checks the bundle offline and shows what a wrong predicate type does; a graded lab follows it. **Auditing Attestations In The Log** finds attestation entries for a key and compares them with the bundle. **Reading A Rekor v2 Setup** builds a v2 signing config and the tile paths an auditor reads.
 
 ## Learning objectives
 
@@ -16,6 +16,7 @@ After this module you can:
 - Read the entry kind and version from a bundle instead of assuming them.
 - Verify an attestation offline with `cosign verify-blob-attestation`, including the predicate type.
 - Compare a log entry of an attestation with the payload in the bundle.
+- Build a signing config for Rekor v2 and compute tile paths.
 
 ## Before you start
 

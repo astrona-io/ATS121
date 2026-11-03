@@ -105,8 +105,11 @@ modules:
         title: "Proofs For Trees Of Any Size"
         path: sections/section-010/module-01/course-04-proofs-for-trees-of-any-size.md
       - type: reading
+        title: "Signed Entry Timestamps By Hand"
+        path: sections/section-010/module-01/course-05-signed-entry-timestamps-by-hand.md
+      - type: reading
         title: Summary
-        path: sections/section-010/module-01/course-05-summary.md
+        path: sections/section-010/module-01/course-06-summary.md
 
       - type: reading
         title: "Create And Read Rekor Entries"
@@ -144,8 +147,11 @@ modules:
         title: "Shards, Tree IDs And The API"
         path: sections/section-010/module-02/course-04-shards-tree-ids-and-the-api.md
       - type: reading
+        title: "What Rekor Checks Before Adding"
+        path: sections/section-010/module-02/course-05-what-rekor-checks-before-adding.md
+      - type: reading
         title: Summary
-        path: sections/section-010/module-02/course-05-summary.md
+        path: sections/section-010/module-02/course-06-summary.md
       - type: quiz
         title: "Knowledge Check: Create And Read Rekor Entries"
         path: sections/section-010/module-02/quiz.yaml
@@ -225,8 +231,14 @@ modules:
         title: "Building A Signing Timeline"
         path: sections/section-020/module-01/course-04-building-a-signing-timeline.md
       - type: reading
+        title: "Keyless Identities In Entries"
+        path: sections/section-020/module-01/course-05-keyless-identities-in-entries.md
+      - type: reading
+        title: "Writing An Audit Report"
+        path: sections/section-020/module-01/course-06-writing-an-audit-report.md
+      - type: reading
         title: Summary
-        path: sections/section-020/module-01/course-05-summary.md
+        path: sections/section-020/module-01/course-07-summary.md
 
       - type: reading
         title: "Monitor The Log"
@@ -264,8 +276,11 @@ modules:
         title: "Handling An Alert"
         path: sections/section-020/module-02/course-04-handling-an-alert.md
       - type: reading
+        title: "Running A Monitor On A Schedule"
+        path: sections/section-020/module-02/course-05-running-a-monitor-on-a-schedule.md
+      - type: reading
         title: Summary
-        path: sections/section-020/module-02/course-05-summary.md
+        path: sections/section-020/module-02/course-06-summary.md
       - type: quiz
         title: "Knowledge Check: Monitor The Log"
         path: sections/section-020/module-02/quiz.yaml
@@ -345,8 +360,14 @@ modules:
         title: "Trust Roots Over Time"
         path: sections/section-030/module-01/course-04-trust-roots-over-time.md
       - type: reading
+        title: "Witnesses And Cosigned Checkpoints"
+        path: sections/section-030/module-01/course-05-witnesses-and-cosigned-checkpoints.md
+      - type: reading
+        title: "Verifying A Keyless Identity"
+        path: sections/section-030/module-01/course-06-verifying-a-keyless-identity.md
+      - type: reading
         title: Summary
-        path: sections/section-030/module-01/course-05-summary.md
+        path: sections/section-030/module-01/course-07-summary.md
 
       - type: reading
         title: "Attestations In The Log"
@@ -384,8 +405,11 @@ modules:
         title: "Auditing Attestations In The Log"
         path: sections/section-030/module-02/course-04-auditing-attestations-in-the-log.md
       - type: reading
+        title: "Reading A Rekor v2 Setup"
+        path: sections/section-030/module-02/course-05-reading-a-rekor-v2-setup.md
+      - type: reading
         title: Summary
-        path: sections/section-030/module-02/course-05-summary.md
+        path: sections/section-030/module-02/course-06-summary.md
       - type: quiz
         title: "Knowledge Check: Attestations In The Log"
         path: sections/section-030/module-02/quiz.yaml

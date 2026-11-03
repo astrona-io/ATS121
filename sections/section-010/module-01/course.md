@@ -6,7 +6,7 @@ A **transparency log** is the answer Sigstore gives to that problem. It is a pub
 
 This module is about how you check such a log without trusting the people who run it. Keep one sentence in mind: **Rekor's proofs let you check its answers with hashes, so you never have to take its word for anything.**
 
-The module has four parts. **Why Signing Needs A Transparency Log** shows what a log adds to a signature, what Rekor records, and how to read the log's current state. **Merkle Trees And Inclusion Proofs** builds a small Merkle tree by hand and verifies a real inclusion proof; a graded lab follows it. **Consistency Proofs, Checkpoints And Monitors** shows how you prove that a log only grew, and who does that checking in practice. **Proofs For Trees Of Any Size** shows how the tree is split when its size is not a power of two, how long a proof is, and why a proof belongs to one tree size.
+The module has five parts. **Why Signing Needs A Transparency Log** shows what a log adds to a signature, what Rekor records, and how to read the log's current state. **Merkle Trees And Inclusion Proofs** builds a small Merkle tree by hand and verifies a real inclusion proof; a graded lab follows it. **Consistency Proofs, Checkpoints And Monitors** shows how you prove that a log only grew, and who does that checking in practice. **Proofs For Trees Of Any Size** shows how the tree is split when its size is not a power of two, how long a proof is, and why a proof belongs to one tree size. **Signed Entry Timestamps By Hand** rebuilds the bytes the log signed for one entry and checks the signature with `openssl`.
 
 ## Learning objectives
 
@@ -20,6 +20,7 @@ After this module you can:
 - Ask Rekor for a consistency proof and explain what it proves.
 - Explain how RFC 6962 splits a tree whose size is not a power of two, and why an inclusion proof belongs to one tree size.
 - Tell a checkpoint from a signed entry timestamp (SET).
+- Rebuild the signed entry timestamp payload and verify it with the log public key.
 
 ## Before you start
 

@@ -27,7 +27,9 @@ The playground's start script signed three artifacts: two with the key `team-a`,
 2. Reading And Auditing Entries, followed by the lab **Find Every Entry Signed By A Leaked Key**
 3. Retrieving Entries In Bulk
 4. Building A Signing Timeline
-5. Summary
+5. Keyless Identities In Entries
+6. Writing An Audit Report
+7. Summary
 
 ### 2. Monitor The Log
 
@@ -37,7 +39,8 @@ The playground holds a private Rekor with entries from the keys `team-a` and `te
 2. A Consistency Monitor
 3. An Identity Monitor, followed by the lab **Detect New Entries By A Watched Key**
 4. Handling An Alert
-5. Summary
+5. Running A Monitor On A Schedule
+6. Summary
 
 ## Section capstone: Investigate An Unknown Signer
 

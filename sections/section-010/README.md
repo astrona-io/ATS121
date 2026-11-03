@@ -29,7 +29,8 @@ The playground holds a private Rekor with two entries, signed with the key `team
 2. Merkle Trees And Inclusion Proofs, followed by the lab **Find And Prove A Release Entry**
 3. Consistency Proofs, Checkpoints And Monitors
 4. Proofs For Trees Of Any Size
-5. Summary
+5. Signed Entry Timestamps By Hand
+6. Summary
 
 ### 2. Create And Read Rekor Entries
 
@@ -39,7 +40,8 @@ The playground holds a private Rekor with two entries signed with the key `team-
 2. Entry Types And Their Fields
 3. Uploading An Entry By Hand, followed by the lab **Upload A Signature To The Log**
 4. Shards, Tree IDs And The API
-5. Summary
+5. What Rekor Checks Before Adding
+6. Summary
 
 ## Section capstone: Prove The Log Only Grew
 

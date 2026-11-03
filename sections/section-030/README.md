@@ -27,7 +27,9 @@ The playground holds two artifacts signed with the key `release`, and their bund
 2. Verifying A Bundle Offline, followed by the lab **Find The Bundles That Do Not Verify**
 3. What Changes With Rekor v2
 4. Trust Roots Over Time
-5. Summary
+5. Witnesses And Cosigned Checkpoints
+6. Verifying A Keyless Identity
+7. Summary
 
 ### 2. Attestations In The Log
 
@@ -37,7 +39,8 @@ The playground holds the key `release`, one signed artifact, one artifact withou
 2. Logging An Attestation
 3. Verifying An Attestation, followed by the lab **Attest A Release Artifact**
 4. Auditing Attestations In The Log
-5. Summary
+5. Reading A Rekor v2 Setup
+6. Summary
 
 ## Section capstone: Keep Verifiable Evidence For Rekor v2
 

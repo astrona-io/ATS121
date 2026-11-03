@@ -4,7 +4,7 @@ A transparency log protects you only if somebody looks at it. The proofs in the 
 
 This module builds the two checks of a monitor by hand with `rekor-cli`, `curl` and `jq`, so you see what every monitor does underneath. Keep one sentence in mind: **a monitor compares the log today with what it saw last time, and anything it cannot explain is an alert.**
 
-The module has four parts. **What A Monitor Checks** names the two checks and the state a monitor keeps. **A Consistency Monitor** checks that the log only grew since the last run. **An Identity Monitor** lists the entries a watched key made since the last run and flags the ones nobody approved; a graded lab follows it. **Handling An Alert** says what to do when a check fails, and how to tell a real incident from a false alarm.
+The module has five parts. **What A Monitor Checks** names the two checks and the state a monitor keeps. **A Consistency Monitor** checks that the log only grew since the last run. **An Identity Monitor** lists the entries a watched key made since the last run and flags the ones nobody approved; a graded lab follows it. **Handling An Alert** says what to do when a check fails, and how to tell a real incident from a false alarm. **Running A Monitor On A Schedule** puts both checks into one script with exit codes and shows how a scheduler calls it.
 
 ## Learning objectives
 
@@ -15,6 +15,7 @@ After this module you can:
 - List the entries a key made since a saved tree size.
 - Compare those entries with a list of approved artifact hashes and report the rest.
 - Explain what each kind of alert means and what to do first.
+- Run the checks from a script that reports through its exit code.
 
 ## Before you start
 
