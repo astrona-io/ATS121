@@ -1,0 +1,251 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats121-030
+course_id: ATS121
+exam_code: SIGSTORE
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-030
+  title: Bundles, Offline Verification And Rekor v2
+placement:
+  position: after
+  reading: sections/section-030/capstone/labs/lab-01/question.md
+questions:
+- id: ats121-030-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe the key-based bundle
+  source_readings:
+  - sections/section-030/module-01/course-01-the-sigstore-bundle.md
+  prompt: You sign a file with a key pair. What does `verificationMaterial` of the
+    bundle hold for the key?
+  options:
+  - id: a
+    text: The private key.
+    explanation: Not correct. A private key never goes into a bundle.
+  - id: b
+    text: The full public key as a PEM file.
+    explanation: Not correct. It holds only a hint.
+  - id: c
+    text: A short-lived certificate from Fulcio.
+    explanation: Not correct. That is for keyless signing.
+  - id: d
+    text: A hint that identifies the public key, not the key itself.
+    explanation: Correct. You must keep the public key to verify.
+  correct_option: d
+  explanation: Correct. You must keep the public key to verify.
+- id: ats121-030-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Find the signed entry timestamp in a bundle
+  source_readings:
+  - sections/section-030/module-01/course-01-the-sigstore-bundle.md
+  prompt: Where does a bundle keep the signed entry timestamp (SET)?
+  options:
+  - id: a
+    text: In `inclusionProof.hashes`.
+    explanation: Not correct. Those are sibling hashes.
+  - id: b
+    text: In `inclusionPromise.signedEntryTimestamp` of a `tlogEntries` item.
+    explanation: Correct. It is the log's signed promise to add the entry.
+  - id: c
+    text: In `messageSignature`.
+    explanation: Not correct. That holds the artifact digest and signature.
+  - id: d
+    text: In `mediaType`.
+    explanation: Not correct. That names the bundle format version.
+  correct_option: b
+  explanation: Correct. It is the log's signed promise to add the entry.
+- id: ats121-030-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Tell the two trust files apart
+  source_readings:
+  - sections/section-030/module-01/course-01-the-sigstore-bundle.md
+  prompt: What do the signing config and the trusted root do?
+  options:
+  - id: a
+    text: The signing config says where to send signatures. The trusted root says
+      whose keys to trust when verifying.
+    explanation: Correct. They have different jobs.
+  - id: b
+    text: The signing config holds the log keys. The trusted root lists the log URLs
+      to sign to.
+    explanation: Not correct. The two roles are the wrong way round.
+  - id: c
+    text: Both hold the private key of the log.
+    explanation: Not correct. They hold only public information.
+  - id: d
+    text: Both are only needed for keyless signing.
+    explanation: Not correct. The lab uses them with key pairs too.
+  correct_option: a
+  explanation: Correct. They have different jobs.
+- id: ats121-030-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Avoid the public-good instance
+  source_readings:
+  - sections/section-030/module-01/course-01-the-sigstore-bundle.md
+  prompt: You run `cosign sign-blob` with cosign v3 and leave out `--signing-config`.
+    Where does the entry go?
+  options:
+  - id: a
+    text: To the private Rekor named by `REKOR_REKOR_SERVER`.
+    explanation: Not correct. That variable is for `rekor-cli`, not for cosign signing.
+  - id: b
+    text: Nowhere, cosign skips the log.
+    explanation: Not correct. cosign v3 still logs, to the public log.
+  - id: c
+    text: To the public-good Rekor instance.
+    explanation: Correct. The default is the public log, which keeps the entry for
+      ever.
+  - id: d
+    text: To a local file only.
+    explanation: Not correct. The log entry is uploaded.
+  correct_option: c
+  explanation: Correct. The default is the public log, which keeps the entry for ever.
+- id: ats121-030-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain offline verification
+  source_readings:
+  - sections/section-030/module-01/course-02-offline-verification.md
+  prompt: "`cosign verify-blob` runs with a bundle and a trusted root. Does it contact
+    Rekor?"
+  options:
+  - id: a
+    text: Yes, it fetches the entry and the proof from Rekor.
+    explanation: Not correct. The bundle already holds them.
+  - id: b
+    text: No. It checks the evidence in the bundle against the log key in the trusted
+      root.
+    explanation: Correct. Everything comes from the bundle and the trusted root.
+  - id: c
+    text: Yes, but only to check the signature.
+    explanation: Not correct. The signature is checked locally.
+  - id: d
+    text: No, and it skips the log checks.
+    explanation: Not correct. It still checks the proof, the checkpoint and the SET.
+  correct_option: b
+  explanation: Correct. Everything comes from the bundle and the trusted root.
+- id: ats121-030-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the error of a changed artifact
+  source_readings:
+  - sections/section-030/module-01/course-02-offline-verification.md
+  prompt: You append a line to an artifact and verify it with its original bundle.
+    Which check fails?
+  options:
+  - id: a
+    text: The signature or digest check, because the file hash no longer matches what
+      was signed.
+    explanation: Correct. The log evidence is still valid but belongs to another file.
+  - id: b
+    text: The checkpoint check, because the log key changed.
+    explanation: Not correct. The log key did not change.
+  - id: c
+    text: The inclusion proof, because a sibling hash changed.
+    explanation: Not correct. Only the artifact changed.
+  - id: d
+    text: No check fails, because the bundle is valid.
+    explanation: Not correct. The bundle is valid for the original file only.
+  correct_option: a
+  explanation: Correct. The log evidence is still valid but belongs to another file.
+- id: ats121-030-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the error of a changed proof
+  source_readings:
+  - sections/section-030/module-01/course-02-offline-verification.md
+  prompt: You change one sibling hash in the inclusion proof of a bundle and leave
+    the artifact alone. What happens?
+  options:
+  - id: a
+    text: Verification passes, because the signature is still correct.
+    explanation: Not correct. The proof is checked too.
+  - id: b
+    text: Verification fails with a signature error.
+    explanation: Not correct. The signature is fine. The log evidence fails.
+  - id: c
+    text: Verification fails with an error about the log evidence, because the hashes
+      no longer lead to the signed root.
+    explanation: Correct. The checkpoint signature no longer fits.
+  - id: d
+    text: cosign fetches a new proof from Rekor.
+    explanation: Not correct. Offline verification never asks the log.
+  correct_option: c
+  explanation: Correct. The checkpoint signature no longer fits.
+- id: ats121-030-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use of --insecure-ignore-tlog
+  source_readings:
+  - sections/section-030/module-01/course-02-offline-verification.md
+  prompt: Why should you not use `--insecure-ignore-tlog` to make a failing verification
+    pass?
+  options:
+  - id: a
+    text: It deletes the log entry.
+    explanation: Not correct. It does not change the log.
+  - id: b
+    text: It only works with keyless signing.
+    explanation: Not correct. It is a general flag that skips the checks.
+  - id: c
+    text: It changes the trusted root.
+    explanation: Not correct. The file stays as it is.
+  - id: d
+    text: It skips every log check, so it hides tampered log evidence.
+    explanation: Correct. It exists only for signatures that were never logged.
+  correct_option: d
+  explanation: Correct. It exists only for signatures that were never logged.
+- id: ats121-030-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Plan evidence for Rekor v2
+  source_readings:
+  - sections/section-030/module-01/course-03-rekor-v2.md
+  prompt: Rekor v2 has no search index. What should a team do?
+  options:
+  - id: a
+    text: Keep a bundle for every artifact it releases.
+    explanation: Correct. In Rekor v2 the bundle is the evidence.
+  - id: b
+    text: Search by hash later, as with Rekor v1.
+    explanation: Not correct. Rekor v2 cannot be searched.
+  - id: c
+    text: Keep only the detached signatures.
+    explanation: Not correct. They hold no log evidence.
+  - id: d
+    text: Use `--insecure-ignore-tlog` when verifying.
+    explanation: Not correct. That skips the log checks.
+  correct_option: a
+  explanation: Correct. In Rekor v2 the bundle is the evidence.
+- id: ats121-030-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Find the signing time in Rekor v2
+  source_readings:
+  - sections/section-030/module-01/course-03-rekor-v2.md
+  prompt: Rekor v2 returns no signed entry timestamp. Where does the time of signing
+    come from?
+  options:
+  - id: a
+    text: From `integratedTime`, which holds the real time.
+    explanation: Not correct. In Rekor v2 `integratedTime` is always 0.
+  - id: b
+    text: From the file date of the artifact.
+    explanation: Not correct. A file date can be changed by anyone.
+  - id: c
+    text: From an RFC 3161 timestamp by a timestamp authority, stored in `timestampVerificationData`
+      of the bundle.
+    explanation: Correct. The trusted root must hold the TSA certificate chain.
+  - id: d
+    text: From the log index.
+    explanation: Not correct. The index only gives order.
+  correct_option: c
+  explanation: Correct. The trusted root must hold the TSA certificate chain.

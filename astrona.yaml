@@ -125,6 +125,10 @@ modules:
             url: https://datatracker.ietf.org/doc/html/rfc6962
           - name: "Rekor transparency log overview"
             url: https://docs.sigstore.dev/logging/overview/
+      - type: quiz
+        title: "Knowledge Check: Transparency Logs And Merkle Trees"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
 
   - id: module-020
     title: "Searching And Auditing Rekor"
@@ -191,6 +195,10 @@ modules:
             url: https://docs.sigstore.dev/logging/overview/
           - name: "Rekor source and rekor-cli"
             url: https://github.com/sigstore/rekor
+      - type: quiz
+        title: "Knowledge Check: Searching And Auditing Rekor"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
 
   - id: module-030
     title: "Bundles, Offline Verification And Rekor v2"
@@ -262,3 +270,11 @@ modules:
             url: https://github.com/sigstore/rekor-tiles
           - name: "cosign signing-config create"
             url: https://github.com/sigstore/cosign/blob/v3.1.4/doc/cosign_signing-config_create.md
+      - type: quiz
+        title: "Knowledge Check: Bundles, Offline Verification And Rekor v2"
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
+      - type: quiz
+        title: "Final Domain Quiz"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70

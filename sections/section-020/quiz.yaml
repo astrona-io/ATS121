@@ -1,0 +1,248 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats121-020
+course_id: ATS121
+exam_code: SIGSTORE
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-020
+  title: Searching And Auditing Rekor
+placement:
+  position: after
+  reading: sections/section-020/capstone/labs/lab-01/question.md
+questions:
+- id: ats121-020-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain the Rekor v1 search index
+  source_readings:
+  - sections/section-020/module-01/course-01-searching-the-log.md
+  prompt: What is the Rekor v1 search index?
+  options:
+  - id: a
+    text: Part of the Merkle tree that is covered by the proofs.
+    explanation: Not correct. The tree and its proofs do not depend on the index.
+  - id: b
+    text: A file the client downloads with every bundle.
+    explanation: Not correct. It stays on the server side.
+  - id: c
+    text: A lookup, kept in Redis next to the tree, that maps hashes and keys to entries.
+    explanation: Correct. It helps you find entries and is not part of the proofs.
+  - id: d
+    text: A list of all trusted public keys.
+    explanation: Not correct. That is the trusted root.
+  correct_option: c
+  explanation: Correct. It helps you find entries and is not part of the proofs.
+- id: ats121-020-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Search by a hash from a release page
+  source_readings:
+  - sections/section-020/module-01/course-01-searching-the-log.md
+  prompt: You have only a SHA-256 hash from a release page. Which command finds the
+    entries for it?
+  options:
+  - id: a
+    text: "`rekor-cli search --sha <hex>`"
+    explanation: Correct. The flag `--sha` takes a hash value.
+  - id: b
+    text: "`rekor-cli search --artifact <hex>`"
+    explanation: Not correct. The flag `--artifact` takes a file, not a hash.
+  - id: c
+    text: "`rekor-cli get --log-index <hex>`"
+    explanation: Not correct. The log index is a position number.
+  - id: d
+    text: "`rekor-cli verify --uuid <hex>`"
+    explanation: Not correct. A file hash is not an entry UUID, and verify does not
+      search.
+  correct_option: a
+  explanation: Correct. The flag `--sha` takes a hash value.
+- id: ats121-020-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Search by public key
+  source_readings:
+  - sections/section-020/module-01/course-01-searching-the-log.md
+  prompt: Which extra flag does `rekor-cli search --public-key team-a.pub` need for
+    a key made by `cosign`?
+  options:
+  - id: a
+    text: "`--operator and`"
+    explanation: Not correct. That combines conditions and is optional.
+  - id: b
+    text: "`--rekor_server`"
+    explanation: Not correct. It selects the log, not the key format.
+  - id: c
+    text: "`--format json`"
+    explanation: Not correct. That changes the output, not how the key is read.
+  - id: d
+    text: "`--pki-format x509`"
+    explanation: Correct. Without it `rekor-cli` cannot read the key file.
+  correct_option: d
+  explanation: Correct. Without it `rekor-cli` cannot read the key file.
+- id: ats121-020-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain searching by hash
+  source_readings:
+  - sections/section-020/module-01/course-01-searching-the-log.md
+  prompt: Two different keys signed exactly the same file. What does a search by the
+    hash of that file return?
+  options:
+  - id: a
+    text: One entry ID, the first one logged.
+    explanation: Not correct. Search returns every matching entry.
+  - id: b
+    text: Two entry IDs, one for each signature.
+    explanation: Correct. A hash search finds every signature over the same bytes.
+  - id: c
+    text: No entry, because the hash is not unique.
+    explanation: Not correct. Both entries record the same hash.
+  - id: d
+    text: Only the entry of the key you use in the command.
+    explanation: Not correct. A hash search does not filter by key.
+  correct_option: b
+  explanation: Correct. A hash search finds every signature over the same bytes.
+- id: ats121-020-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read an entry ID
+  source_readings:
+  - sections/section-020/module-01/course-01-searching-the-log.md
+  prompt: A search returns an 80-character entry ID. How do you compare it with a
+    64-character UUID?
+  options:
+  - id: a
+    text: Compare the first 64 characters.
+    explanation: Not correct. The tree identifier is at the start.
+  - id: b
+    text: Convert the ID to a log index first.
+    explanation: Not correct. The ID and the index are different values.
+  - id: c
+    text: The two can never match.
+    explanation: Not correct. They match once you drop the tree prefix.
+  - id: d
+    text: Compare the last 64 characters. The first 16 name the tree.
+    explanation: Correct. The tree identifier comes first.
+  correct_option: d
+  explanation: Correct. The tree identifier comes first.
+- id: ats121-020-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Interpret an empty search
+  source_readings:
+  - sections/section-020/module-01/course-01-searching-the-log.md
+  prompt: A search for a public key on your Rekor server returns no entries. What
+    does that prove?
+  options:
+  - id: a
+    text: That the key never signed anything anywhere.
+    explanation: Not correct. The key could have signed to another log or not logged
+      at all.
+  - id: b
+    text: Only that this log's index has no such key. Signatures sent to another log
+      do not show up.
+    explanation: Correct. An empty answer is limited to this log.
+  - id: c
+    text: That the key is revoked.
+    explanation: Not correct. Search does not check revocation.
+  - id: d
+    text: That the log lost the entries.
+    explanation: Not correct. The index simply has no matching key.
+  correct_option: b
+  explanation: Correct. An empty answer is limited to this log.
+- id: ats121-020-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the artifact hash in an entry body
+  source_readings:
+  - sections/section-020/module-01/course-02-reading-and-auditing-entries.md
+  prompt: Where in the decoded body of a `hashedrekord` entry is the artifact's hash?
+  options:
+  - id: a
+    text: "`spec.data.hash.value`"
+    explanation: Correct. The algorithm and value are under `spec.data.hash`.
+  - id: b
+    text: "`spec.signature.content`"
+    explanation: Not correct. That field holds the signature.
+  - id: c
+    text: "`spec.signature.publicKey.content`"
+    explanation: Not correct. That field holds the public key.
+  - id: d
+    text: "`IntegratedTime`"
+    explanation: Not correct. That field holds a time.
+  correct_option: a
+  explanation: Correct. The algorithm and value are under `spec.data.hash`.
+- id: ats121-020-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Read the signer's public key from an entry
+  source_readings:
+  - sections/section-020/module-01/course-02-reading-and-auditing-entries.md
+  prompt: The body holds the public key in `spec.signature.publicKey.content`. How
+    do you get the readable PEM text?
+  options:
+  - id: a
+    text: Hash the value with SHA-256.
+    explanation: Not correct. Hashing cannot be reversed to a key.
+  - id: b
+    text: Use the value as it is.
+    explanation: Not correct. It is Base64, not PEM text.
+  - id: c
+    text: Decode the value from Base64.
+    explanation: Correct. The key is the Base64 of a PEM file.
+  - id: d
+    text: Convert the value from Unix seconds.
+    explanation: Not correct. That is how the integrated time is stored.
+  correct_option: c
+  explanation: Correct. The key is the Base64 of a PEM file.
+- id: ats121-020-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Find the first entry of a key
+  source_readings:
+  - sections/section-020/module-01/course-02-reading-and-auditing-entries.md
+  prompt: How do you find the first time a key was used in the log?
+  options:
+  - id: a
+    text: Take the entry with the smallest log index among the search results.
+    explanation: Correct. A smaller index was added earlier.
+  - id: b
+    text: Take the first entry ID in the search result.
+    explanation: Not correct. Search results are not ordered by time.
+  - id: c
+    text: Take the entry with the largest log index.
+    explanation: Not correct. That is the newest entry.
+  - id: d
+    text: Read the date inside the public key file.
+    explanation: Not correct. A key file has no use date.
+  correct_option: a
+  explanation: Correct. A smaller index was added earlier.
+- id: ats121-020-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Audit one key against a release manifest
+  source_readings:
+  - sections/section-020/module-01/course-02-reading-and-auditing-entries.md
+  prompt: During an audit of one key, an entry has an artifact hash that is not in
+    the release manifest. What do you do?
+  options:
+  - id: a
+    text: Delete the entry from the log.
+    explanation: Not correct. No one can delete entries from the log.
+  - id: b
+    text: 'Treat it as a lead: keep the entry ID and log index as evidence and check
+      build logs and registries.'
+    explanation: Correct. It is an unexpected signing event, not yet proof of an attack.
+  - id: c
+    text: Ignore it, because the signature is valid.
+    explanation: Not correct. A valid signature can still come from a stolen key.
+  - id: d
+    text: Declare an attack at once.
+    explanation: Not correct. It is a lead until you check other sources.
+  correct_option: b
+  explanation: Correct. It is an unexpected signing event, not yet proof of an attack.

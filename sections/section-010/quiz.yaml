@@ -1,0 +1,250 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats121-010
+course_id: ATS121
+exam_code: SIGSTORE
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: section
+  id: section-010
+  title: Transparency Logs And Merkle Trees
+placement:
+  position: after
+  reading: sections/section-010/capstone/labs/lab-01/question.md
+questions:
+- id: ats121-010-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain what an append-only log guarantees
+  source_readings:
+  - sections/section-010/module-01/course-01-why-transparency-logs.md
+  prompt: What does it mean that a transparency log is append-only?
+  options:
+  - id: a
+    text: Each entry can be edited once by the key owner.
+    explanation: Not correct. No one can edit an entry, including the key owner.
+  - id: b
+    text: New entries go at the end, and existing entries are never edited or deleted.
+    explanation: Correct. Append-only means entries are only added at the end.
+  - id: c
+    text: Old entries are deleted after a set time.
+    explanation: Not correct. Entries are never deleted.
+  - id: d
+    text: Only the log operator can read the entries.
+    explanation: Not correct. The log is public and anyone can read it.
+  correct_option: b
+  explanation: Correct. Append-only means entries are only added at the end.
+- id: ats121-010-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Name what a hashedrekord entry records
+  source_readings:
+  - sections/section-010/module-01/course-01-why-transparency-logs.md
+  prompt: What does a `hashedrekord` entry in Rekor store?
+  options:
+  - id: a
+    text: The artifact file and its signature.
+    explanation: Not correct. Rekor does not store the artifact itself.
+  - id: b
+    text: Only the signature, without the hash or the key.
+    explanation: Not correct. The hash and the key are part of the entry too.
+  - id: c
+    text: The private key and the signature.
+    explanation: Not correct. A private key is never sent to the log.
+  - id: d
+    text: The SHA-256 hash of the artifact, the signature and the public key or certificate.
+    explanation: Correct. The entry holds the hash, the signature and the key, not
+      the file.
+  correct_option: d
+  explanation: Correct. The entry holds the hash, the signature and the key, not the
+    file.
+- id: ats121-010-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Read the state of the log
+  source_readings:
+  - sections/section-010/module-01/course-01-why-transparency-logs.md
+  prompt: A new entry is added to the Rekor log. What happens to the tree size and
+    the root hash?
+  options:
+  - id: a
+    text: The tree size grows by one and the root hash changes.
+    explanation: Correct. The root hash changes when any entry is added or changed.
+  - id: b
+    text: The tree size grows by one and the root hash stays the same.
+    explanation: Not correct. The root hash covers every entry, so it changes.
+  - id: c
+    text: The tree size stays the same and the root hash changes.
+    explanation: Not correct. A new entry makes the tree larger.
+  - id: d
+    text: Both stay the same until the log rotates to a new shard.
+    explanation: Not correct. Both change with each new entry.
+  correct_option: a
+  explanation: Correct. The root hash changes when any entry is added or changed.
+- id: ats121-010-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compute Merkle tree hashes
+  source_readings:
+  - sections/section-010/module-01/course-02-merkle-trees-and-inclusion-proofs.md
+  prompt: How does Rekor compute the leaf hash of an entry?
+  options:
+  - id: a
+    text: "`SHA-256(0x01 || entry)`"
+    explanation: Not correct. The 0x01 prefix is for inner nodes.
+  - id: b
+    text: "`SHA-256(left || right)` with no prefix"
+    explanation: Not correct. That is not the RFC 6962 rule, and it has no prefix
+      to keep leaves and nodes apart.
+  - id: c
+    text: "`SHA-256(0x00 || entry)`"
+    explanation: Correct. Leaves use the 0x00 prefix, as RFC 6962 defines.
+  - id: d
+    text: "`SHA-512(entry)`"
+    explanation: Not correct. Rekor uses SHA-256 for its tree.
+  correct_option: c
+  explanation: Correct. Leaves use the 0x00 prefix, as RFC 6962 defines.
+- id: ats121-010-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Follow an inclusion proof
+  source_readings:
+  - sections/section-010/module-01/course-02-merkle-trees-and-inclusion-proofs.md
+  prompt: In a tree of four entries, which hashes does the log send to prove that
+    e2 is in the tree?
+  options:
+  - id: a
+    text: L3 and N01
+    explanation: Correct. L3 is the sibling of L2, and N01 is the sibling of N23.
+  - id: b
+    text: L2 and N23
+    explanation: Not correct. These are the hashes the verifier computes itself, not
+      siblings.
+  - id: c
+    text: L0 and L1
+    explanation: Not correct. Only the sibling N01 is needed, not its two leaves.
+  - id: d
+    text: Only the root hash R
+    explanation: Not correct. The root alone does not let the verifier recompute anything.
+  correct_option: a
+  explanation: Correct. L3 is the sibling of L2, and N01 is the sibling of N23.
+- id: ats121-010-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Tell a log index from a UUID
+  source_readings:
+  - sections/section-010/module-01/course-02-merkle-trees-and-inclusion-proofs.md
+  prompt: In Rekor v1, what is the 64-character UUID of an entry?
+  options:
+  - id: a
+    text: The log index written in hexadecimal.
+    explanation: Not correct. The index is a position, a different value.
+  - id: b
+    text: The root hash of the tree when the entry was added.
+    explanation: Not correct. The root hash covers the whole tree.
+  - id: c
+    text: The leaf hash of the entry.
+    explanation: Correct. The UUID is the leaf hash. The index is a position number.
+  - id: d
+    text: The SHA-256 hash of the artifact.
+    explanation: Not correct. The artifact hash is inside the entry body.
+  correct_option: c
+  explanation: Correct. The UUID is the leaf hash. The index is a position number.
+- id: ats121-010-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Verify an inclusion proof with rekor-cli
+  source_readings:
+  - sections/section-010/module-01/course-02-merkle-trees-and-inclusion-proofs.md
+  prompt: What does `rekor-cli verify --uuid <id>` do?
+  options:
+  - id: a
+    text: It only prints the entry body, without any check.
+    explanation: Not correct. That is what `rekor-cli get` does.
+  - id: b
+    text: It checks the signature with the private key of the signer.
+    explanation: Not correct. It checks the log evidence, and it never uses a private
+      key.
+  - id: c
+    text: It uploads the artifact to the log again.
+    explanation: Not correct. It only reads from the log.
+  - id: d
+    text: It fetches the entry and its proof, recomputes the root hash and checks
+      the signed checkpoint and the entry timestamp.
+    explanation: Correct. It does the whole walk for you.
+  correct_option: d
+  explanation: Correct. It does the whole walk for you.
+- id: ats121-010-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain a consistency proof
+  source_readings:
+  - sections/section-010/module-01/course-03-consistency-proofs-and-checkpoints.md
+  prompt: What does a consistency proof show?
+  options:
+  - id: a
+    text: That one entry is in the tree.
+    explanation: Not correct. That is an inclusion proof.
+  - id: b
+    text: That a tree of size N is the first N entries of a larger tree, so nothing
+      was changed or removed.
+    explanation: Correct. It shows the log only grew.
+  - id: c
+    text: That the artifact matches its signature.
+    explanation: Not correct. A proof from the log does not check the signature.
+  - id: d
+    text: That the log operator holds the private key of the signer.
+    explanation: Not correct. The log never holds signer private keys.
+  correct_option: b
+  explanation: Correct. It shows the log only grew.
+- id: ats121-010-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare a SET with an inclusion proof
+  source_readings:
+  - sections/section-010/module-01/course-03-consistency-proofs-and-checkpoints.md
+  prompt: What is the difference between a signed entry timestamp (SET) and an inclusion
+    proof?
+  options:
+  - id: a
+    text: A SET shows the entry is in the tree. An inclusion proof is a promise.
+    explanation: Not correct. The two are the wrong way round.
+  - id: b
+    text: They are the same data under two names.
+    explanation: Not correct. They promise different things.
+  - id: c
+    text: A SET is a signed promise to add the entry. An inclusion proof shows the
+      entry is in the tree.
+    explanation: Correct. The SET comes at once, before the entry is in the tree.
+  - id: d
+    text: A SET proves that the log only grew.
+    explanation: Not correct. That is the job of a consistency proof.
+  correct_option: c
+  explanation: Correct. The SET comes at once, before the entry is in the tree.
+- id: ats121-010-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Read the root hash of an older tree size
+  source_readings:
+  - sections/section-010/module-01/course-03-consistency-proofs-and-checkpoints.md
+  prompt: You saved the root hash of the log at tree size 10. Where do you find the
+    root hash the log signed for size 10?
+  options:
+  - id: a
+    text: In a checkpoint for that size, for example in a Sigstore bundle.
+    explanation: Correct. A checkpoint signs the root hash at its own tree size.
+  - id: b
+    text: In the `rootHash` field of a consistency proof answer that ends at size
+      10.
+    explanation: Not correct. That field always holds the root of the current tree.
+  - id: c
+    text: In the output of `rekor-cli loginfo` today.
+    explanation: Not correct. It shows today's root, not the root at size 10.
+  - id: d
+    text: In the UUID of the tenth entry.
+    explanation: Not correct. The UUID is a leaf hash.
+  correct_option: a
+  explanation: Correct. A checkpoint signs the root hash at its own tree size.
