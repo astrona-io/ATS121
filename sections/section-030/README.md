@@ -12,17 +12,32 @@ This section shows what a bundle holds, how `cosign` verifies one without contac
 - Telling a changed artifact from a changed inclusion proof by the failing check.
 - What changes with Rekor v2: tiles, one entry type, no search index, no signed entry timestamps, and yearly shards.
 - Writing a signing config that points `cosign` at a Rekor v2 log.
+- Reading the validity windows in a trusted root.
+- Creating, verifying and auditing an attestation (a DSSE envelope with an in-toto statement) in the log.
 
 ## The learning path
 
-The module has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module's playground holds two artifacts signed with the key `release`, and their bundles.
+Each module has a landing page, short parts, a graded lab right after the part it tests, and a summary. Each module also has its own playground with a private Rekor.
 
 ### 1. Verify Bundles Offline And Prepare For Rekor v2
+
+The playground holds two artifacts signed with the key `release`, and their bundles.
 
 1. The Sigstore Bundle
 2. Verifying A Bundle Offline, followed by the lab **Find The Bundles That Do Not Verify**
 3. What Changes With Rekor v2
-4. Summary
+4. Trust Roots Over Time
+5. Summary
+
+### 2. Attestations In The Log
+
+The playground holds the key `release`, one signed artifact, one artifact without an attestation, and a predicate file.
+
+1. Attestations And The DSSE Envelope
+2. Logging An Attestation
+3. Verifying An Attestation, followed by the lab **Attest A Release Artifact**
+4. Auditing Attestations In The Log
+5. Summary
 
 ## Section capstone: Keep Verifiable Evidence For Rekor v2
 

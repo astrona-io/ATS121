@@ -225,3 +225,289 @@ questions:
     explanation: Not correct. That skips the log checks.
   correct_option: b
   explanation: Correct. In Rekor v2 the bundle is the evidence.
+- id: ats121-final-q11
+  type: single_choice
+  difficulty: beginner
+  learning_objective: "Name the entry kinds"
+  source_readings:
+  - sections/section-010/module-02/course-02-entry-types-and-their-fields.md
+  prompt: "Which entry kind records the SHA-256 hash of an artifact, a signature over it and a public key or certificate, and never the file?"
+  options:
+  - id: a
+    text: "rfc3161"
+    explanation: "Not correct. rfc3161 records a timestamp response."
+  - id: b
+    text: "alpine"
+    explanation: "Not correct. alpine records an Alpine package."
+  - id: c
+    text: "jar"
+    explanation: "Not correct. jar records a signed Java archive."
+  - id: d
+    text: "hashedrekord"
+    explanation: "Correct. A hashedrekord entry holds the hash, not the file."
+  correct_option: d
+  explanation: "Correct. A hashedrekord entry holds the hash, not the file."
+- id: ats121-final-q12
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Explain duplicate uploads"
+  source_readings:
+  - sections/section-010/module-02/course-03-uploading-an-entry-by-hand.md
+  prompt: "You upload the same artifact, signature and key a second time. What does Rekor do?"
+  options:
+  - id: a
+    text: "It returns a conflict that names the UUID of the existing entry"
+    explanation: "Correct. The log keeps one entry for one artifact, one signature and one key."
+  - id: b
+    text: "It adds a second entry with a new index"
+    explanation: "Not correct. A new entry needs a different signature."
+  - id: c
+    text: "It replaces the first entry"
+    explanation: "Not correct. Entries are never replaced."
+  - id: d
+    text: "It deletes the first entry and adds a new one"
+    explanation: "Not correct. Entries are never deleted."
+  correct_option: a
+  explanation: "Correct. The log keeps one entry for one artifact, one signature and one key."
+- id: ats121-final-q13
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Split an entry ID"
+  source_readings:
+  - sections/section-010/module-02/course-04-shards-tree-ids-and-the-api.md
+  prompt: "An entry ID has 80 hexadecimal characters. What are its two parts?"
+  options:
+  - id: a
+    text: "A 64-character tree ID followed by a 16-character index"
+    explanation: "Not correct. The tree ID is the short part."
+  - id: b
+    text: "A 16-character tree ID followed by the 64-character UUID"
+    explanation: "Correct. The UUID is the leaf hash, and the prefix names the tree."
+  - id: c
+    text: "The log index followed by the root hash"
+    explanation: "Not correct. Neither value is part of the ID."
+  - id: d
+    text: "The signature followed by the public key"
+    explanation: "Not correct. Entry IDs do not contain signatures."
+  correct_option: b
+  explanation: "Correct. The UUID is the leaf hash, and the prefix names the tree."
+- id: ats121-final-q14
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Describe monitor state"
+  source_readings:
+  - sections/section-020/module-02/course-01-what-a-monitor-checks.md
+  prompt: "What does a monitor save between runs?"
+  options:
+  - id: a
+    text: "The private key of the watched identity"
+    explanation: "Not correct. A monitor never needs a private key."
+  - id: b
+    text: "Every artifact it has seen"
+    explanation: "Not correct. The log holds hashes, not artifacts."
+  - id: c
+    text: "The tree size and root hash at the end of the last run"
+    explanation: "Correct. The saved size is the dividing line for new entries."
+  - id: d
+    text: "Nothing, because the log remembers"
+    explanation: "Not correct. Without a saved state, the monitor cannot tell what is new."
+  correct_option: c
+  explanation: "Correct. The saved size is the dividing line for new entries."
+- id: ats121-final-q15
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Find the new entries"
+  source_readings:
+  - sections/section-020/module-02/course-03-an-identity-monitor.md
+  prompt: "Which entries are new since the saved state?"
+  options:
+  - id: a
+    text: "Those with the newest integrated time"
+    explanation: "Not correct. Times can overlap between runs."
+  - id: b
+    text: "Those whose hash starts with 0"
+    explanation: "Not correct. Hash prefixes mean nothing."
+  - id: c
+    text: "Those that the search returns first"
+    explanation: "Not correct. Search order is not a cut line."
+  - id: d
+    text: "Those with a log index at or above the saved tree size"
+    explanation: "Correct. The first new entry has an index equal to the saved size."
+  correct_option: d
+  explanation: "Correct. The first new entry has an index equal to the saved size."
+- id: ats121-final-q16
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Compare with an approved list"
+  source_readings:
+  - sections/section-020/module-02/course-03-an-identity-monitor.md
+  prompt: "A new entry is signed by the watched key. Its artifact hash is not in the approved list. What should the monitor do?"
+  options:
+  - id: a
+    text: "Report it, even though the signature is valid"
+    explanation: "Correct. A valid signature by the right key can still sign an unexpected artifact."
+  - id: b
+    text: "Ignore it, because the signature is valid"
+    explanation: "Not correct. The signature only proves who signed."
+  - id: c
+    text: "Delete it from the log"
+    explanation: "Not correct. Entries cannot be deleted."
+  - id: d
+    text: "Add it to the approved list automatically"
+    explanation: "Not correct. A person decides what is approved."
+  correct_option: a
+  explanation: "Correct. A valid signature by the right key can still sign an unexpected artifact."
+- id: ats121-final-q17
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Respond to an unexpected entry"
+  source_readings:
+  - sections/section-020/module-02/course-04-handling-an-alert.md
+  prompt: "What do you do first with an unexpected entry by a release key?"
+  options:
+  - id: a
+    text: "Delete the key before anything else"
+    explanation: "Not correct. Deleting first destroys evidence."
+  - id: b
+    text: "Record the entry, its UUID, hash, time and proof"
+    explanation: "Correct. Save the evidence before you change anything."
+  - id: c
+    text: "Announce that the log was attacked"
+    explanation: "Not correct. Rule out your own state and false alarms first."
+  - id: d
+    text: "Wait for the next monitor run"
+    explanation: "Not correct. Waiting lets the key be used again."
+  correct_option: b
+  explanation: "Correct. Save the evidence before you change anything."
+- id: ats121-final-q18
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Describe the envelope"
+  source_readings:
+  - sections/section-030/module-02/course-01-attestations-and-the-dsse-envelope.md
+  prompt: "What does a DSSE signature cover?"
+  options:
+  - id: a
+    text: "Only the payload"
+    explanation: "Not correct. The type is covered too."
+  - id: b
+    text: "Only the payload type"
+    explanation: "Not correct. The payload is covered too."
+  - id: c
+    text: "The pre-authentication encoding of the payload type and the payload"
+    explanation: "Correct. That ties the signature to the label as well as the bytes."
+  - id: d
+    text: "The Rekor checkpoint"
+    explanation: "Not correct. The checkpoint is signed by the log."
+  correct_option: c
+  explanation: "Correct. That ties the signature to the label as well as the bytes."
+- id: ats121-final-q19
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Read the entry kind"
+  source_readings:
+  - sections/section-030/module-02/course-02-logging-an-attestation.md
+  prompt: "How do you find the kind of the Rekor entry for an attestation?"
+  options:
+  - id: a
+    text: "Assume it is hashedrekord"
+    explanation: "Not correct. hashedrekord is for plain signatures."
+  - id: b
+    text: "Assume it from the cosign version"
+    explanation: "Not correct. Tool versions can change the answer."
+  - id: c
+    text: "Guess from the log index"
+    explanation: "Not correct. The index says nothing about the kind."
+  - id: d
+    text: "Read kindVersion in the bundle and the kind in the entry body"
+    explanation: "Correct. The kind depends on the tools, so read it."
+  correct_option: d
+  explanation: "Correct. The kind depends on the tools, so read it."
+- id: ats121-final-q20
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Read a failed verification"
+  source_readings:
+  - sections/section-030/module-02/course-03-verifying-an-attestation.md
+  prompt: "You verify a valid bundle but ask for a different predicate type. What happens?"
+  options:
+  - id: a
+    text: "It passes, because the signature is valid"
+    explanation: "Not correct. The type is part of the check."
+  - id: b
+    text: "It passes with a warning"
+    explanation: "Not correct. There is no warning mode."
+  - id: c
+    text: "It asks Rekor for another entry"
+    explanation: "Not correct. Verification is offline."
+  - id: d
+    text: "The verification fails with a predicate type mismatch"
+    explanation: "Correct. A claim of one kind must not stand in for another."
+  correct_option: d
+  explanation: "Correct. A claim of one kind must not stand in for another."
+- id: ats121-final-q21
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Compute proofs for any tree size"
+  source_readings:
+  - sections/section-010/module-01/course-04-proofs-for-trees-of-any-size.md
+  prompt: "How does RFC 6962 split a list of n entries?"
+  options:
+  - id: a
+    text: "At the largest power of two smaller than n, so the left part is a complete tree"
+    explanation: "Correct. Appending then does not change a complete left subtree."
+  - id: b
+    text: "Into two halves of equal size"
+    explanation: "Not correct. n is rarely even."
+  - id: c
+    text: "At the first entry"
+    explanation: "Not correct. That would make a chain."
+  - id: d
+    text: "At the entry with the newest time"
+    explanation: "Not correct. Time plays no part."
+  correct_option: a
+  explanation: "Correct. Appending then does not change a complete left subtree."
+- id: ats121-final-q22
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Read entries by index"
+  source_readings:
+  - sections/section-020/module-01/course-03-retrieving-entries-in-bulk.md
+  prompt: "Why walk the log by index when you doubt a search result?"
+  options:
+  - id: a
+    text: "Search is always wrong"
+    explanation: "Not correct. Search is a convenience, usually right."
+  - id: b
+    text: "The tree is the record, and the search index may be incomplete"
+    explanation: "Correct. A walk by index asks the tree."
+  - id: c
+    text: "Index walks are faster than any search"
+    explanation: "Not correct. A walk makes one request per entry."
+  - id: d
+    text: "Walks do not need Rekor"
+    explanation: "Not correct. A walk reads from Rekor."
+  correct_option: b
+  explanation: "Correct. A walk by index asks the tree."
+- id: ats121-final-q23
+  type: single_choice
+  difficulty: advanced
+  learning_objective: "Use a trusted root over time"
+  source_readings:
+  - sections/section-030/module-01/course-04-trust-roots-over-time.md
+  prompt: "How does cosign choose the log key for an old bundle?"
+  options:
+  - id: a
+    text: "By the newest key in the trusted root"
+    explanation: "Not correct. That breaks old bundles."
+  - id: b
+    text: "By trying the public-good key only"
+    explanation: "Not correct. The root lists every key."
+  - id: c
+    text: "By the time in the bundle, matched to the validity window of each key in the trusted root"
+    explanation: "Correct. Old keys stay in the root with an end time."
+  - id: d
+    text: "By skipping the log check"
+    explanation: "Not correct. Skipping hides tampering."
+  correct_option: c
+  explanation: "Correct. Old keys stay in the root with an end time."

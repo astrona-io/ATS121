@@ -1,0 +1,236 @@
+# Knowledge check for module 020-02.
+schema_version: 1
+kind: question_bank
+id: ats121-020-02
+course_id: ATS121
+exam_code: SIGSTORE
+status: draft
+provenance: "Original practice material written for this course; not official exam questions."
+scope:
+  type: module
+  id: module-020-02
+  title: "Monitor The Log"
+placement:
+  position: after
+  reading: sections/section-020/module-02/course-05-summary.md
+questions:
+- id: ats121-020-02-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: "Name the two checks of a monitor"
+  source_readings:
+  - sections/section-020/module-02/course-01-what-a-monitor-checks.md
+  prompt: "Which two checks does a log monitor make?"
+  options:
+  - id: a
+    text: "A signature check and a size check"
+    explanation: "Not correct. Those are not the two monitor checks."
+  - id: b
+    text: "A consistency check and an identity check"
+    explanation: "Correct. One asks whether the log is honest, the other what the watched key signed."
+  - id: c
+    text: "A DNS check and a TLS check"
+    explanation: "Not correct. Those concern the transport."
+  - id: d
+    text: "A build check and a deploy check"
+    explanation: "Not correct. Those concern the pipeline."
+  correct_option: b
+  explanation: "Correct. One asks whether the log is honest, the other what the watched key signed."
+- id: ats121-020-02-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Describe monitor state"
+  source_readings:
+  - sections/section-020/module-02/course-01-what-a-monitor-checks.md
+  prompt: "What does a monitor save between runs?"
+  options:
+  - id: a
+    text: "The private key of the watched identity"
+    explanation: "Not correct. A monitor never needs a private key."
+  - id: b
+    text: "Every artifact it has seen"
+    explanation: "Not correct. The log holds hashes, not artifacts."
+  - id: c
+    text: "The tree size and root hash at the end of the last run"
+    explanation: "Correct. The saved size is the dividing line for new entries."
+  - id: d
+    text: "Nothing, because the log remembers"
+    explanation: "Not correct. Without a saved state, the monitor cannot tell what is new."
+  correct_option: c
+  explanation: "Correct. The saved size is the dividing line for new entries."
+- id: ats121-020-02-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Sort the consistency cases"
+  source_readings:
+  - sections/section-020/module-02/course-02-a-consistency-monitor.md
+  prompt: "The current tree size is smaller than the saved size. What does the monitor do?"
+  options:
+  - id: a
+    text: "It saves the new size and continues"
+    explanation: "Not correct. Saving first hides the problem."
+  - id: b
+    text: "It asks for a consistency proof"
+    explanation: "Not correct. A proof runs only from a smaller tree to a larger one."
+  - id: c
+    text: "It ignores the result"
+    explanation: "Not correct. A shrunken tree is the worst result."
+  - id: d
+    text: "It raises an alert"
+    explanation: "Correct. An append-only log never shrinks."
+  correct_option: d
+  explanation: "Correct. An append-only log never shrinks."
+- id: ats121-020-02-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Use rekor-cli loginfo as a check"
+  source_readings:
+  - sections/section-020/module-02/course-02-a-consistency-monitor.md
+  prompt: "What does rekor-cli loginfo do with the state it saved on its last run?"
+  options:
+  - id: a
+    text: "It asks the log for a consistency proof from that state and checks it"
+    explanation: "Correct. It fails when the proof does not hold."
+  - id: b
+    text: "It deletes the old state"
+    explanation: "Not correct. It keeps the state."
+  - id: c
+    text: "It uploads the state to the log"
+    explanation: "Not correct. The state is local."
+  - id: d
+    text: "It compares only the tree sizes"
+    explanation: "Not correct. It checks a proof, not only sizes."
+  correct_option: a
+  explanation: "Correct. It fails when the proof does not hold."
+- id: ats121-020-02-q05
+  type: single_choice
+  difficulty: advanced
+  learning_objective: "Test an alert"
+  source_readings:
+  - sections/section-020/module-02/course-02-a-consistency-monitor.md
+  prompt: "How do you test that the consistency alert works?"
+  options:
+  - id: a
+    text: "Wait until the log fails"
+    explanation: "Not correct. A check you never tested is not proven."
+  - id: b
+    text: "Write a saved state with a larger tree size than the log and run the check"
+    explanation: "Correct. Break an input on purpose and check that the alert fires."
+  - id: c
+    text: "Delete an entry from the log"
+    explanation: "Not correct. You cannot delete entries."
+  - id: d
+    text: "Restart the Rekor pod"
+    explanation: "Not correct. A restart changes the log key."
+  correct_option: b
+  explanation: "Correct. Break an input on purpose and check that the alert fires."
+- id: ats121-020-02-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Find the new entries"
+  source_readings:
+  - sections/section-020/module-02/course-03-an-identity-monitor.md
+  prompt: "Which entries are new since the saved state?"
+  options:
+  - id: a
+    text: "Those with the newest integrated time"
+    explanation: "Not correct. Times can overlap between runs."
+  - id: b
+    text: "Those whose hash starts with 0"
+    explanation: "Not correct. Hash prefixes mean nothing."
+  - id: c
+    text: "Those with a log index at or above the saved tree size"
+    explanation: "Correct. The first new entry has an index equal to the saved size."
+  - id: d
+    text: "Those that the search returns first"
+    explanation: "Not correct. Search order is not a cut line."
+  correct_option: c
+  explanation: "Correct. The first new entry has an index equal to the saved size."
+- id: ats121-020-02-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Compare with an approved list"
+  source_readings:
+  - sections/section-020/module-02/course-03-an-identity-monitor.md
+  prompt: "A new entry is signed by the watched key. Its artifact hash is not in the approved list. What should the monitor do?"
+  options:
+  - id: a
+    text: "Ignore it, because the signature is valid"
+    explanation: "Not correct. The signature only proves who signed."
+  - id: b
+    text: "Delete it from the log"
+    explanation: "Not correct. Entries cannot be deleted."
+  - id: c
+    text: "Add it to the approved list automatically"
+    explanation: "Not correct. A person decides what is approved."
+  - id: d
+    text: "Report it, even though the signature is valid"
+    explanation: "Correct. A valid signature by the right key can still sign an unexpected artifact."
+  correct_option: d
+  explanation: "Correct. A valid signature by the right key can still sign an unexpected artifact."
+- id: ats121-020-02-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Move the state"
+  source_readings:
+  - sections/section-020/module-02/course-03-an-identity-monitor.md
+  prompt: "When should the monitor save the new state?"
+  options:
+  - id: a
+    text: "After the checks pass or the alerts are reviewed"
+    explanation: "Correct. Saving early loses the alert on the next run."
+  - id: b
+    text: "At the start of every run"
+    explanation: "Not correct. An entry that raised an alert is then never reported again."
+  - id: c
+    text: "Only once a year"
+    explanation: "Not correct. The cut line would be far too old."
+  - id: d
+    text: "Before it reads the log"
+    explanation: "Not correct. The state must describe what was read."
+  correct_option: a
+  explanation: "Correct. Saving early loses the alert on the next run."
+- id: ats121-020-02-q09
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Respond to an unexpected entry"
+  source_readings:
+  - sections/section-020/module-02/course-04-handling-an-alert.md
+  prompt: "What do you do first with an unexpected entry by a release key?"
+  options:
+  - id: a
+    text: "Delete the key before anything else"
+    explanation: "Not correct. Deleting first destroys evidence."
+  - id: b
+    text: "Record the entry, its UUID, hash, time and proof"
+    explanation: "Correct. Save the evidence before you change anything."
+  - id: c
+    text: "Announce that the log was attacked"
+    explanation: "Not correct. Rule out your own state and false alarms first."
+  - id: d
+    text: "Wait for the next monitor run"
+    explanation: "Not correct. Waiting lets the key be used again."
+  correct_option: b
+  explanation: "Correct. Save the evidence before you change anything."
+- id: ats121-020-02-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: "Judge a consistency alert"
+  source_readings:
+  - sections/section-020/module-02/course-04-handling-an-alert.md
+  prompt: "What is the most common cause of a consistency alert?"
+  options:
+  - id: a
+    text: "The log operator rewrote history"
+    explanation: "Not correct. This is rare."
+  - id: b
+    text: "A fault in the monitor, such as a wrong or restored state file"
+    explanation: "Correct. Rule out your own state before you blame the log."
+  - id: c
+    text: "The artifact was signed twice"
+    explanation: "Not correct. Duplicate signatures do not break consistency."
+  - id: d
+    text: "The key expired"
+    explanation: "Not correct. Expiry does not affect the log tree."
+  correct_option: b
+  explanation: "Correct. Rule out your own state before you blame the log."

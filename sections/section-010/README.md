@@ -12,10 +12,14 @@ This section explains how Rekor, the Sigstore transparency log, can be checked b
 - Following a consistency proof between two tree sizes, and asking Rekor for one with `rekor-cli logproof`.
 - What a checkpoint and a signed entry timestamp (SET) are, and what each one promises.
 - What monitors and witnesses do with checkpoints.
+- The programs behind Rekor v1 (the Rekor server, Trillian, MySQL and Redis) and what each one stores.
+- The entry kinds Rekor v1 accepts, and how to read the body of a `hashedrekord` entry.
+- Signing a file with `openssl` and uploading the entry with `rekor-cli upload`.
+- How an entry ID is built from a tree ID and a leaf hash, and what a shard is.
 
 ## The learning path
 
-The module has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The module also has its own playground, a cluster with a private Rekor and a workstation pod, and the landing page starts it for you.
+Each module has a landing page, short parts, a graded lab right after the part it tests, and a summary. Each module also has its own playground, a cluster with a private Rekor and a workstation pod, and the landing page starts it for you.
 
 ### 1. Read And Prove A Transparency Log
 
@@ -24,7 +28,18 @@ The playground holds a private Rekor with two entries, signed with the key `team
 1. Why Signing Needs A Transparency Log
 2. Merkle Trees And Inclusion Proofs, followed by the lab **Find And Prove A Release Entry**
 3. Consistency Proofs, Checkpoints And Monitors
-4. Summary
+4. Proofs For Trees Of Any Size
+5. Summary
+
+### 2. Create And Read Rekor Entries
+
+The playground holds a private Rekor with two entries signed with the key `team-a`, an `openssl` key pair, and one file that is not in the log yet.
+
+1. How Rekor Is Built
+2. Entry Types And Their Fields
+3. Uploading An Entry By Hand, followed by the lab **Upload A Signature To The Log**
+4. Shards, Tree IDs And The API
+5. Summary
 
 ## Section capstone: Prove The Log Only Grew
 

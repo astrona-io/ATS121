@@ -1,0 +1,236 @@
+# Knowledge check for module 010-02.
+schema_version: 1
+kind: question_bank
+id: ats121-010-02
+course_id: ATS121
+exam_code: SIGSTORE
+status: draft
+provenance: "Original practice material written for this course; not official exam questions."
+scope:
+  type: module
+  id: module-010-02
+  title: "Create And Read Rekor Entries"
+placement:
+  position: after
+  reading: sections/section-010/module-02/course-05-summary.md
+questions:
+- id: ats121-010-02-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: "Name the parts of a Rekor v1 deployment"
+  source_readings:
+  - sections/section-010/module-02/course-01-how-rekor-is-built.md
+  prompt: "Which part of a Rekor v1 deployment stores the Merkle tree?"
+  options:
+  - id: a
+    text: "Trillian, with a MySQL database"
+    explanation: "Correct. Trillian stores the Merkle tree in MySQL."
+  - id: b
+    text: "The Redis search index"
+    explanation: "Not correct. Redis holds only the search index."
+  - id: c
+    text: "The Rekor server process alone"
+    explanation: "Not correct. The Rekor server checks entries and signs, and Trillian stores the tree."
+  - id: d
+    text: "The workstation pod"
+    explanation: "Not correct. The workstation is where the learner runs tools."
+  correct_option: a
+  explanation: "Correct. Trillian stores the Merkle tree in MySQL."
+- id: ats121-010-02-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Explain why the search index is separate from the tree"
+  source_readings:
+  - sections/section-010/module-02/course-01-how-rekor-is-built.md
+  prompt: "A search by artifact hash returns nothing. What can you conclude?"
+  options:
+  - id: a
+    text: "The artifact was never signed"
+    explanation: "Not correct. The entry may exist and be missing from the index."
+  - id: b
+    text: "Nothing for certain, because the search index is separate from the tree and may be incomplete"
+    explanation: "Correct. The tree is the source of truth, and the index is a convenience."
+  - id: c
+    text: "The entry was deleted from the log"
+    explanation: "Not correct. Entries are never deleted."
+  - id: d
+    text: "The log is not append-only"
+    explanation: "Not correct. An empty search says nothing about the append-only property."
+  correct_option: b
+  explanation: "Correct. The tree is the source of truth, and the index is a convenience."
+- id: ats121-010-02-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: "Name the entry kinds"
+  source_readings:
+  - sections/section-010/module-02/course-02-entry-types-and-their-fields.md
+  prompt: "Which entry kind records the SHA-256 hash of an artifact, a signature over it and a public key or certificate, and never the file?"
+  options:
+  - id: a
+    text: "rfc3161"
+    explanation: "Not correct. rfc3161 records a timestamp response."
+  - id: b
+    text: "alpine"
+    explanation: "Not correct. alpine records an Alpine package."
+  - id: c
+    text: "hashedrekord"
+    explanation: "Correct. A hashedrekord entry holds the hash, not the file."
+  - id: d
+    text: "jar"
+    explanation: "Not correct. jar records a signed Java archive."
+  correct_option: c
+  explanation: "Correct. A hashedrekord entry holds the hash, not the file."
+- id: ats121-010-02-q04
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Read the body of an entry"
+  source_readings:
+  - sections/section-010/module-02/course-02-entry-types-and-their-fields.md
+  prompt: "Which two fields must you read before you parse the spec of an entry body?"
+  options:
+  - id: a
+    text: "logIndex and integratedTime"
+    explanation: "Not correct. Those describe when and where the entry was added."
+  - id: b
+    text: "treeID and treeSize"
+    explanation: "Not correct. Those describe the tree."
+  - id: c
+    text: "rootHash and checkpoint"
+    explanation: "Not correct. Those describe the log state."
+  - id: d
+    text: "kind and apiVersion"
+    explanation: "Correct. Kind and version together decide the shape of the spec."
+  correct_option: d
+  explanation: "Correct. Kind and version together decide the shape of the spec."
+- id: ats121-010-02-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Create an entry without cosign"
+  source_readings:
+  - sections/section-010/module-02/course-03-uploading-an-entry-by-hand.md
+  prompt: "What does rekor-cli upload need to create a hashedrekord entry?"
+  options:
+  - id: a
+    text: "The artifact, a signature over it and the public key"
+    explanation: "Correct. The log needs a hash, a signature and the key that verifies it."
+  - id: b
+    text: "Only the artifact"
+    explanation: "Not correct. Without a signature the server has nothing to check."
+  - id: c
+    text: "Only the private key"
+    explanation: "Not correct. The private key never goes to the log."
+  - id: d
+    text: "A bundle from cosign"
+    explanation: "Not correct. A bundle is an output, not an input."
+  correct_option: a
+  explanation: "Correct. The log needs a hash, a signature and the key that verifies it."
+- id: ats121-010-02-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Use the right key format flag"
+  source_readings:
+  - sections/section-010/module-02/course-03-uploading-an-entry-by-hand.md
+  prompt: "You signed a file with openssl and hold a PEM public key. Which flag tells rekor-cli upload how to read the key?"
+  options:
+  - id: a
+    text: "--insecure-ignore-tlog"
+    explanation: "Not correct. That flag skips log checks in cosign."
+  - id: b
+    text: "--pki-format x509"
+    explanation: "Correct. Without it, rekor-cli expects a PGP key."
+  - id: c
+    text: "--format json"
+    explanation: "Not correct. That flag changes the output format."
+  - id: d
+    text: "--operator and"
+    explanation: "Not correct. That flag combines search terms."
+  correct_option: b
+  explanation: "Correct. Without it, rekor-cli expects a PGP key."
+- id: ats121-010-02-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Explain duplicate uploads"
+  source_readings:
+  - sections/section-010/module-02/course-03-uploading-an-entry-by-hand.md
+  prompt: "You upload the same artifact, signature and key a second time. What does Rekor do?"
+  options:
+  - id: a
+    text: "It adds a second entry with a new index"
+    explanation: "Not correct. A new entry needs a different signature."
+  - id: b
+    text: "It replaces the first entry"
+    explanation: "Not correct. Entries are never replaced."
+  - id: c
+    text: "It returns a conflict that names the UUID of the existing entry"
+    explanation: "Correct. The log keeps one entry for one artifact, one signature and one key."
+  - id: d
+    text: "It deletes the first entry and adds a new one"
+    explanation: "Not correct. Entries are never deleted."
+  correct_option: c
+  explanation: "Correct. The log keeps one entry for one artifact, one signature and one key."
+- id: ats121-010-02-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: "Split an entry ID"
+  source_readings:
+  - sections/section-010/module-02/course-04-shards-tree-ids-and-the-api.md
+  prompt: "An entry ID has 80 hexadecimal characters. What are its two parts?"
+  options:
+  - id: a
+    text: "A 64-character tree ID followed by a 16-character index"
+    explanation: "Not correct. The tree ID is the short part."
+  - id: b
+    text: "The log index followed by the root hash"
+    explanation: "Not correct. Neither value is part of the ID."
+  - id: c
+    text: "The signature followed by the public key"
+    explanation: "Not correct. Entry IDs do not contain signatures."
+  - id: d
+    text: "A 16-character tree ID followed by the 64-character UUID"
+    explanation: "Correct. The UUID is the leaf hash, and the prefix names the tree."
+  correct_option: d
+  explanation: "Correct. The UUID is the leaf hash, and the prefix names the tree."
+- id: ats121-010-02-q09
+  type: single_choice
+  difficulty: beginner
+  learning_objective: "Define a shard"
+  source_readings:
+  - sections/section-010/module-02/course-04-shards-tree-ids-and-the-api.md
+  prompt: "What is a shard in Rekor v1?"
+  options:
+  - id: a
+    text: "A separate Trillian tree; the operator starts a new one when the active tree gets too large"
+    explanation: "Correct. Old trees are frozen and keep answering reads."
+  - id: b
+    text: "A copy of the log kept for backup"
+    explanation: "Not correct. A shard holds its own entries."
+  - id: c
+    text: "A subset of entries for one key"
+    explanation: "Not correct. Shards split by time and size, not by key."
+  - id: d
+    text: "A signed checkpoint"
+    explanation: "Not correct. A checkpoint is a signed note about one tree."
+  correct_option: a
+  explanation: "Correct. Old trees are frozen and keep answering reads."
+- id: ats121-010-02-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: "Choose the right API call"
+  source_readings:
+  - sections/section-010/module-02/course-04-shards-tree-ids-and-the-api.md
+  prompt: "Which API call returns the tree ID, tree size, root hash and inactive shards?"
+  options:
+  - id: a
+    text: "GET /api/v1/log"
+    explanation: "Correct. rekor-cli loginfo calls it."
+  - id: b
+    text: "GET /api/v1/log/proof"
+    explanation: "Not correct. That returns a consistency proof."
+  - id: c
+    text: "POST /api/v1/index/retrieve"
+    explanation: "Not correct. That searches the index."
+  - id: d
+    text: "GET /api/v1/log/entries/{id}"
+    explanation: "Not correct. That returns one entry."
+  correct_option: a
+  explanation: "Correct. rekor-cli loginfo calls it."

@@ -4,7 +4,7 @@ On Monday morning the security team reports that the private key of the old CI s
 
 This module is about reading the log as an auditor. **Rekor**, Sigstore's transparency log, stores for every `hashedrekord` entry the SHA-256 hash of the artifact, the signature and the public key, and Rekor v1 keeps a **search index**, a Redis index that maps hashes and public keys to entries. Keep one sentence in mind: **the log tells you what a key signed; only your release records tell you what it should have signed.**
 
-The module has two parts. **Searching The Log** covers the search index and the ways to query it: by artifact, by hash and by public key. **Reading And Auditing Entries** decodes what an entry records and walks through a full audit of one key; a graded lab follows it.
+The module has four parts. **Searching The Log** covers the search index and the ways to query it: by artifact, by hash and by public key. **Reading And Auditing Entries** decodes what an entry records and walks through a full audit of one key; a graded lab follows it. **Retrieving Entries In Bulk** reads entries by log index, singly and in batches, without the search index. **Building A Signing Timeline** orders the entries of one key and explains what the log index and the integrated time each prove.
 
 ## Learning objectives
 
@@ -16,6 +16,8 @@ After this module you can:
 - Pull the artifact hash and the public key out of a `hashedrekord` entry.
 - List every entry made by one key and compare it with a release manifest.
 - Use the log index and the integrated time to place an entry in time.
+- Read entries by log index, in a range and in a batch with the retrieve API.
+- Build a timeline for one key and find gaps and bursts.
 
 ## Before you start
 

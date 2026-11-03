@@ -102,8 +102,55 @@ modules:
         title: "Consistency Proofs, Checkpoints And Monitors"
         path: sections/section-010/module-01/course-03-consistency-proofs-and-checkpoints.md
       - type: reading
+        title: "Proofs For Trees Of Any Size"
+        path: sections/section-010/module-01/course-04-proofs-for-trees-of-any-size.md
+      - type: reading
         title: Summary
-        path: sections/section-010/module-01/course-04-summary.md
+        path: sections/section-010/module-01/course-05-summary.md
+
+      - type: reading
+        title: "Create And Read Rekor Entries"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "How Rekor Is Built"
+        path: sections/section-010/module-02/course-01-how-rekor-is-built.md
+      - type: reading
+        title: "Entry Types And Their Fields"
+        path: sections/section-010/module-02/course-02-entry-types-and-their-fields.md
+      - type: reading
+        title: "Uploading An Entry By Hand"
+        path: sections/section-010/module-02/course-03-uploading-an-entry-by-hand.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Upload A Signature To The Log Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: proofs
+        task_kind: build
+        tags: [rekor, rekor-cli, hashedrekord, log-index, entry-uuid, transparency-log]
+        learning_goals:
+          - Sign a file with openssl and upload the signature as a hashedrekord entry
+          - Confirm the new entry is in the log and signed by the right key
+          - Record the log index and UUID of the new entry
+        resources:
+          - name: "Rekor transparency log overview"
+            url: https://docs.sigstore.dev/logging/overview/
+          - name: "Rekor source and rekor-cli"
+            url: https://github.com/sigstore/rekor
+      - type: reading
+        title: "Shards, Tree IDs And The API"
+        path: sections/section-010/module-02/course-04-shards-tree-ids-and-the-api.md
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Create And Read Rekor Entries"
+        path: sections/section-010/module-02/quiz.yaml
+        question_count: 10
+        pass_score: 70
 
       - type: reading
         title: Question
@@ -172,8 +219,58 @@ modules:
           - name: "Rekor source and rekor-cli"
             url: https://github.com/sigstore/rekor
       - type: reading
+        title: "Retrieving Entries In Bulk"
+        path: sections/section-020/module-01/course-03-retrieving-entries-in-bulk.md
+      - type: reading
+        title: "Building A Signing Timeline"
+        path: sections/section-020/module-01/course-04-building-a-signing-timeline.md
+      - type: reading
         title: Summary
-        path: sections/section-020/module-01/course-03-summary.md
+        path: sections/section-020/module-01/course-05-summary.md
+
+      - type: reading
+        title: "Monitor The Log"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "What A Monitor Checks"
+        path: sections/section-020/module-02/course-01-what-a-monitor-checks.md
+      - type: reading
+        title: "A Consistency Monitor"
+        path: sections/section-020/module-02/course-02-a-consistency-monitor.md
+      - type: reading
+        title: "An Identity Monitor"
+        path: sections/section-020/module-02/course-03-an-identity-monitor.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Detect New Entries By A Watched Key Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: auditing
+        task_kind: build
+        tags: [rekor, rekor-cli, audit, log-index, public-key-search, entry-uuid, transparency-log]
+        learning_goals:
+          - Count the entries the log gained since a saved monitor state
+          - List new entries of a watched key whose artifact hash is not approved
+          - Report the unapproved entries by entry ID
+        resources:
+          - name: "Rekor transparency log overview"
+            url: https://docs.sigstore.dev/logging/overview/
+          - name: "Rekor source and rekor-cli"
+            url: https://github.com/sigstore/rekor
+      - type: reading
+        title: "Handling An Alert"
+        path: sections/section-020/module-02/course-04-handling-an-alert.md
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Monitor The Log"
+        path: sections/section-020/module-02/quiz.yaml
+        question_count: 10
+        pass_score: 70
 
       - type: reading
         title: Question
@@ -245,8 +342,55 @@ modules:
         title: "What Changes With Rekor v2"
         path: sections/section-030/module-01/course-03-rekor-v2.md
       - type: reading
+        title: "Trust Roots Over Time"
+        path: sections/section-030/module-01/course-04-trust-roots-over-time.md
+      - type: reading
         title: Summary
-        path: sections/section-030/module-01/course-04-summary.md
+        path: sections/section-030/module-01/course-05-summary.md
+
+      - type: reading
+        title: "Attestations In The Log"
+        path: sections/section-030/module-02/course.md
+      - type: reading
+        title: "Attestations And The DSSE Envelope"
+        path: sections/section-030/module-02/course-01-attestations-and-the-dsse-envelope.md
+      - type: reading
+        title: "Logging An Attestation"
+        path: sections/section-030/module-02/course-02-logging-an-attestation.md
+      - type: reading
+        title: "Verifying An Attestation"
+        path: sections/section-030/module-02/course-03-verifying-an-attestation.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Attest A Release Artifact Lab"
+        path: sections/section-030/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: bundles
+        task_kind: build
+        tags: [cosign, sigstore-bundle, offline-verification, trusted-root, signing-config, rekor, log-index]
+        learning_goals:
+          - Create a signed attestation bundle with a given predicate type and log it
+          - Verify the attestation offline against the lab trusted root
+          - Record the entry kind and log index of the attestation
+        resources:
+          - name: "Sigstore bundle format"
+            url: https://docs.sigstore.dev/about/bundle/
+          - name: "cosign documentation"
+            url: https://github.com/sigstore/cosign
+      - type: reading
+        title: "Auditing Attestations In The Log"
+        path: sections/section-030/module-02/course-04-auditing-attestations-in-the-log.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Attestations In The Log"
+        path: sections/section-030/module-02/quiz.yaml
+        question_count: 10
+        pass_score: 70
 
       - type: reading
         title: Question

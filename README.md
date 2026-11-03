@@ -27,9 +27,9 @@ contains:
 
 | Section | Title | Modules | Labs | Topic |
 | --- | --- | --- | --- | --- |
-| [010](sections/section-010) | Transparency Logs And Merkle Trees | 1 | 1 + capstone | Proofs |
-| [020](sections/section-020) | Searching And Auditing Rekor | 1 | 1 + capstone | Auditing |
-| [030](sections/section-030) | Bundles, Offline Verification And Rekor v2 | 1 | 1 + capstone | Bundles |
+| [010](sections/section-010) | Transparency Logs And Merkle Trees | 2 | 2 + capstone | Proofs |
+| [020](sections/section-020) | Searching And Auditing Rekor | 2 | 2 + capstone | Auditing |
+| [030](sections/section-030) | Bundles, Offline Verification And Rekor v2 | 2 | 2 + capstone | Bundles |
 
 The order goes from how the log can be trusted, to what an auditor does with
 it, to the evidence a verifier keeps. Section 010 builds the Merkle tree and
@@ -43,9 +43,12 @@ must.
 
 | Module | Reader | Parts | Labs |
 | --- | --- | --- | --- |
-| 010-01 | [Read And Prove A Transparency Log](sections/section-010/module-01/course.md) | 3 | [lab-01](sections/section-010/module-01/labs/lab-01) |
-| 020-01 | [Search And Audit Rekor Entries](sections/section-020/module-01/course.md) | 2 | [lab-01](sections/section-020/module-01/labs/lab-01) |
-| 030-01 | [Verify Bundles Offline And Prepare For Rekor v2](sections/section-030/module-01/course.md) | 3 | [lab-01](sections/section-030/module-01/labs/lab-01) |
+| 010-01 | [Read And Prove A Transparency Log](sections/section-010/module-01/course.md) | 4 | [lab-01](sections/section-010/module-01/labs/lab-01) |
+| 010-02 | [Create And Read Rekor Entries](sections/section-010/module-02/course.md) | 4 | [lab-01](sections/section-010/module-02/labs/lab-01) |
+| 020-01 | [Search And Audit Rekor Entries](sections/section-020/module-01/course.md) | 4 | [lab-01](sections/section-020/module-01/labs/lab-01) |
+| 020-02 | [Monitor The Log](sections/section-020/module-02/course.md) | 4 | [lab-01](sections/section-020/module-02/labs/lab-01) |
+| 030-01 | [Verify Bundles Offline And Prepare For Rekor v2](sections/section-030/module-01/course.md) | 4 | [lab-01](sections/section-030/module-01/labs/lab-01) |
+| 030-02 | [Attestations In The Log](sections/section-030/module-02/course.md) | 4 | [lab-01](sections/section-030/module-02/labs/lab-01) |
 
 ---
 

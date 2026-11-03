@@ -4,7 +4,7 @@ A deployment system checks the signature of every artifact it installs. If each 
 
 This module is about that evidence and how to check it. Keep one sentence in mind: **a bundle lets you verify offline, so the bundle is the evidence you must keep.** That sentence matters even more with **Rekor v2**, the redesigned Sigstore log, which no longer offers a search index to find entries again.
 
-The module has three parts. **The Sigstore Bundle** opens a bundle field by field and explains the two trust files the lab uses. **Verifying A Bundle Offline** runs `cosign verify-blob` against good and tampered bundles; a graded lab follows it. **What Changes With Rekor v2** compares the two log versions and shows how a client is pointed at a new log.
+The module has four parts. **The Sigstore Bundle** opens a bundle field by field and explains the two trust files the lab uses. **Verifying A Bundle Offline** runs `cosign verify-blob` against good and tampered bundles; a graded lab follows it. **What Changes With Rekor v2** compares the two log versions and shows how a client is pointed at a new log. **Trust Roots Over Time** explains validity windows in the trusted root and why old bundles keep verifying.
 
 ## Learning objectives
 
@@ -16,6 +16,7 @@ After this module you can:
 - Tell from a failing verification whether the artifact or the log evidence changed.
 - Explain what Rekor v2 changes for searching, entry types and timestamps.
 - Write a signing config that points `cosign` at a Rekor v2 log.
+- Read the validity windows in a trusted root and explain why old bundles still verify.
 
 ## Before you start
 
