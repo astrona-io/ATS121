@@ -13,7 +13,7 @@
 training:
   id: ATS121
   title: "Sigstore: Immutable Auditing With The Rekor Transparency Log"
-  maturity: draft
+  maturity: alpha
   description: >
     Training material covering the Immutable Auditing With The Rekor
     Transparency Log domain of the Sigstore training path: why signing needs
